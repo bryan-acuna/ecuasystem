@@ -23,11 +23,22 @@ dist-ssr
 *.sln
 *.sw?
 
+# Prettier
+.prettierrc
+.prettierrc.json
+.prettierrc.yml
+.prettierrc.yaml
+.prettierrc.js
+prettier.config.js
+
+# Prisma
+/generated/prisma
+
 # Environment variables
 .env
 .env.local
 .env.production
-.env.*.local
 
 # Build output
 build/
+dist/

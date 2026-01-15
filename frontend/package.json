@@ -1,17 +1,36 @@
 {
   "name": "ecuasystems",
   "private": true,
+  "proxy": "http://localhost:8000",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:prod": "tsc -b && vite build --mode production",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "analyze": "vite build --mode analyze"
   },
   "dependencies": {
+    "@paypal/react-paypal-js": "^8.9.2",
+    "@reduxjs/toolkit": "^2.9.0",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
+    "build": "^0.1.4",
+    "npm": "^11.7.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.1.1",
+    "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
+    "react-router-bootstrap": "^0.26.3",
+    "react-router-dom": "^7.9.4",
+    "react-toastify": "^11.0.5",
+    "redux-persist": "^6.0.0",
+    "run": "^1.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

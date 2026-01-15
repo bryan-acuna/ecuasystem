@@ -1,73 +1,119 @@
-# React + TypeScript + Vite
+# Ecuasystems Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern React TypeScript e-commerce frontend built with Vite.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** with TypeScript
+- **Redux Toolkit** with RTK Query for state management
+- **React Router v7** for routing
+- **React Bootstrap** for UI components
+- **Vite** for fast development and optimized builds
+- **React Toastify** for notifications
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the frontend directory:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:8000
+VITE_NODE_ENV=development
 ```
+
+### Development
+
+```bash
+# Start dev server (runs on port 3000)
+npm run dev
+```
+
+### Building for Production
+
+```bash
+# Type check
+npm run type-check
+
+# Lint
+npm run lint
+
+# Build
+npm run build:prod
+
+# Preview production build
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── assets/          # Static assets (styles, images)
+├── components/      # Reusable components
+├── config/          # Configuration files
+├── screens/         # Page components
+├── services/        # API services (RTK Query)
+├── slices/          # Redux slices
+├── store/           # Redux store configuration
+├── types/           # TypeScript type definitions
+└── utils/           # Utility functions
+```
+
+## Features
+
+- **Type-safe** with TypeScript
+- **Error boundaries** for graceful error handling
+- **Code splitting** for optimized bundle sizes
+- **SEO optimized** with proper meta tags
+- **Responsive design** with Bootstrap
+- **State management** with Redux Toolkit
+- **API caching** with RTK Query
+- **Toast notifications** for user feedback
+
+## Production Optimizations
+
+- ✅ Bundle splitting (React, Redux, UI vendors)
+- ✅ Error boundary for crash recovery
+- ✅ TypeScript strict mode
+- ✅ SEO meta tags
+- ✅ Environment variable configuration
+- ✅ Production build scripts
+
+## Deployment
+
+### Vercel/Netlify
+1. Build command: `npm run build:prod`
+2. Output directory: `dist`
+3. Set environment variables in hosting platform
+
+### Manual Deployment
+```bash
+npm run build:prod
+# Deploy the 'dist' folder
+```
+
+## Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run build:prod` - Build with production optimizations
+- `npm run type-check` - Run TypeScript type checking
+- `npm run lint` - Lint code
+- `npm run lint:fix` - Lint and auto-fix issues
+- `npm run preview` - Preview production build locally
+
+## License
+
+MIT
