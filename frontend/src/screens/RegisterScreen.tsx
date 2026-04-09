@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 const RegisterScreen = () => {
   const dispatch = useAppDispatch();
@@ -32,20 +33,20 @@ const RegisterScreen = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password != '' && password === confirmPassword) {
-      try {
-        const user = await register({
-          name,
-          password,
-          email,
-        }).unwrap();
-        dispatch(setCredentials({ ...user }));
-      } catch (err: any) {
-        toast.error(err?.data?.message || err?.error || 'Login failed');
-      }
-    } else {
-      toast.error('Password do not match');
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return;
+    }
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    try {
+      const user = await register({ name, password, email }).unwrap();
+      dispatch(setCredentials({ ...user }));
+      toast.success(`Welcome, ${user.name}! Your account has been created.`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.error || 'Registration failed');
     }
   };
 
@@ -60,6 +61,7 @@ const RegisterScreen = () => {
             placeholder="Enter name"
             value={name}
             onChange={e => setName(e.target.value)}
+            required
           />
         </Form.Group>
         <Form.Group className="my-3" controlId="email">
@@ -69,6 +71,7 @@ const RegisterScreen = () => {
             placeholder="Enter email"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            required
           />
         </Form.Group>
 
@@ -76,18 +79,20 @@ const RegisterScreen = () => {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Password"
+            placeholder="Enter password"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            required
           />
         </Form.Group>
         <Form.Group className="my-3" controlId="confirm-password">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Password"
+            placeholder="Confirm password"
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
+            required
           />
         </Form.Group>
         <Button
@@ -100,6 +105,15 @@ const RegisterScreen = () => {
         </Button>
         {isLoading && <Loader />}
       </Form>
+
+      <div className="d-flex align-items-center my-3 gap-2">
+        <hr className="flex-grow-1 m-0" />
+        <span className="text-muted" style={{ fontSize: '0.8rem' }}>or</span>
+        <hr className="flex-grow-1 m-0" />
+      </div>
+
+      <GoogleAuthButton redirect={redirect} />
+
       <Row className="py-3">
         <Col>
           Returning Customer?{' '}

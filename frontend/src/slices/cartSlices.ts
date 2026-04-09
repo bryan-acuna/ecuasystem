@@ -57,8 +57,6 @@ const cartSlice = createSlice({
       action: PayloadAction<{ productId: string; qty: number }>
     ) => {
       const { productId, qty } = action.payload;
-      console.log(state.cartItems);
-      console.log(productId);
       if (qty < 1) {
         state.cartItems = state.cartItems.filter(item => item.id !== productId);
       } else {
@@ -73,7 +71,7 @@ const cartSlice = createSlice({
 
     removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
       state.cartItems = state.cartItems.filter(
-        item => item.productId !== action.payload.id
+        item => item.id !== action.payload.id
       );
       const totals = calculateCartTotals(state.cartItems);
       Object.assign(state, totals);

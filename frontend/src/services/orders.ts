@@ -30,6 +30,10 @@ const ordersApi = api.injectEndpoints({
         };
       },
     }),
+    getMyOrders: builder.query<Order[], void>({
+      query: () => '/orders/mine',
+      keepUnusedDataFor: 5,
+    }),
     getPayPalClientId: builder.query<{ clientId: string }, void>({
       query: () => '/config/paypal',
       keepUnusedDataFor: 5,
@@ -39,6 +43,7 @@ const ordersApi = api.injectEndpoints({
 export const {
   useCreateOrderMutation,
   useGetOrdersQuery,
+  useGetMyOrdersQuery,
   useGetOrderDetailsQuery,
   useGetPayPalClientIdQuery,
   usePayOrderMutation,

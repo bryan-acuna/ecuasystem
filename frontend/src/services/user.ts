@@ -12,6 +12,12 @@ interface LogoutResponse {
 
 type LoginRequest = Omit<RegisterRequest, 'name'>;
 
+interface UpdateProfileRequest {
+  name: string;
+  email: string;
+  password?: string;
+}
+
 export const userApi = api.injectEndpoints({
   endpoints: builder => ({
     login: builder.mutation<User, LoginRequest>({
@@ -34,8 +40,31 @@ export const userApi = api.injectEndpoints({
         body: credentials,
       }),
     }),
+    googleAuth: builder.mutation<User, { credential: string }>({
+      query: body => ({
+        url: '/users/auth/google',
+        method: 'POST',
+        body,
+      }),
+    }),
+    getProfile: builder.query<User, void>({
+      query: () => '/users/profile',
+    }),
+    updateProfile: builder.mutation<User, UpdateProfileRequest>({
+      query: data => ({
+        url: '/users/profile',
+        method: 'PUT',
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  userApi;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useGoogleAuthMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} = userApi;

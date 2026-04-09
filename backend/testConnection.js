@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function testConnection() {
   try {
-    console.log('Connceting');
+    console.log('Connecting');
     await prisma.$connect();
     console.log('✅ Successfully connected to MongoDB!');
     const count = await prisma.product.count();

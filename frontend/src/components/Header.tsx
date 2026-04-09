@@ -1,5 +1,5 @@
 import { Badge, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaPlus } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { useLogoutMutation } from '../services/user';
@@ -27,7 +27,7 @@ const Header = () => {
   };
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
+      <Navbar variant="dark" expand="md" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>Ecuasystems</Navbar.Brand>
@@ -36,6 +36,18 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+              <NavDropdown title="Electronics" id="electronics-dropdown">
+                <LinkContainer to="/category/phones">
+                  <NavDropdown.Item>Phones</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/category/tablets">
+                  <NavDropdown.Item>Tablets</NavDropdown.Item>
+                </LinkContainer>
+                <NavDropdown.Divider />
+                <LinkContainer to="/category/electronics">
+                  <NavDropdown.Item>More Electronics</NavDropdown.Item>
+                </LinkContainer>
+              </NavDropdown>
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <FaShoppingCart /> Cart{' '}
@@ -46,12 +58,22 @@ const Header = () => {
                   )}
                 </Nav.Link>
               </LinkContainer>
-              (
+              {userInfo?.isAdmin && (
+                <LinkContainer to="/admin/product/new">
+                  <Nav.Link>
+                    <FaPlus /> Add Product
+                  </Nav.Link>
+                </LinkContainer>
+              )}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
+                  <LinkContainer to="/my-orders">
+                    <NavDropdown.Item>My Orders</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Divider />
                   <NavDropdown.Item onClick={logoutHandler}>
                     Log Out
                   </NavDropdown.Item>
@@ -63,7 +85,6 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
               )}
-              )
             </Nav>
           </Navbar.Collapse>
         </Container>

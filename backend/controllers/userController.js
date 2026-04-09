@@ -3,6 +3,9 @@ import { matchPassword } from '../utils/userHelper.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const prisma = new PrismaClient();
 
@@ -16,7 +19,7 @@ const authUser = asyncHandler(async (req, res) => {
     where: { email },
   });
 
-  if (user && (await matchPassword(password, user.password))) {
+  if (user && user.password && (await matchPassword(password, user.password))) {
     generateToken(res, user.id);
 
     res.json({
@@ -113,7 +116,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       data: {
         name: req.body.name || user.name,
         email: req.body.email || user.email,
-        ...(req.body.password && { password: req.body.password }),
+        ...(req.body.password && {
+          password: bcrypt.hashSync(req.body.password, 10),
+        }),
       },
     });
 
@@ -206,6 +211,58 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Auth user with Google
+// @route   POST /api/users/auth/google
+// @access  Public
+const authWithGoogle = asyncHandler(async (req, res) => {
+  if (!process.env.GOOGLE_CLIENT_ID) {
+    res.status(501);
+    throw new Error('Google login is not configured on this server');
+  }
+  const { credential } = req.body;
+  if (!credential) {
+    res.status(400);
+    throw new Error('Google credential is required');
+  }
+
+  const ticket = await googleClient.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+
+  const { sub: googleId, email, name, email_verified } = ticket.getPayload();
+
+  if (!email_verified) {
+    res.status(401);
+    throw new Error('Google email not verified');
+  }
+
+  let user = await prisma.user.findUnique({ where: { googleId } });
+
+  if (!user) {
+    user = await prisma.user.findUnique({ where: { email } });
+    if (user) {
+      user = await prisma.user.update({
+        where: { email },
+        data: { googleId },
+      });
+    } else {
+      user = await prisma.user.create({
+        data: { name, email, googleId },
+      });
+    }
+  }
+
+  generateToken(res, user.id);
+
+  res.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+});
+
 export {
   authUser,
   registerUser,
@@ -216,4 +273,5 @@ export {
   deleteUser,
   getUserById,
   updateUser,
+  authWithGoogle,
 };

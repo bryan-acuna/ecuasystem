@@ -9,6 +9,7 @@ import {
   ListGroup,
   Row,
 } from 'react-bootstrap';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import { removeFromCart, updateItemQuantity } from '../slices/cartSlices';
@@ -70,21 +71,20 @@ const CartScreen = () => {
                 </Col>
                 <Col md={2}>${item.price}</Col>
                 <Col md={2}>
-                  <Form.Control
-                    as="select"
+                  <Form.Select
                     value={item.qty}
                     onChange={e =>
                       handleQtyChange(item.id, Number(e.target.value))
                     }
-                    aria-label={`Quantity for ${item.name}`} // NEW!
+                    aria-label={`Quantity for ${item.name}`}
                     disabled={item.countInStock === 0}
                   >
                     {[...Array(item.countInStock).keys()].map(x => (
-                      <option key={x + 0} value={x + 0}>
-                        {x + 0}
+                      <option key={x + 1} value={x + 1}>
+                        {x + 1}
                       </option>
                     ))}
-                  </Form.Control>
+                  </Form.Select>
                   {item.countInStock === 0 && (
                     <small className="text-danger">Out of Stock</small>
                   )}
