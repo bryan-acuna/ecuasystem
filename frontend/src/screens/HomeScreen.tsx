@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Heading, Select, Text, Callout, Card, Separator } from '@radix-ui/themes';
-import { Info } from 'lucide-react';
+import { Info, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Product } from '../types/Product';
 import { useGetProductsQuery } from '../services/product';
 import Loader from '../components/Loader';
@@ -19,11 +19,63 @@ const inputStyle: React.CSSProperties = {
   color: 'var(--gray-12)',
 };
 
+const FilterControls = ({
+  sort, setSort, minPrice, setMinPrice, maxPrice, setMaxPrice,
+}: {
+  sort: SortOption;
+  setSort: (v: SortOption) => void;
+  minPrice: string;
+  setMinPrice: (v: string) => void;
+  maxPrice: string;
+  setMaxPrice: (v: string) => void;
+}) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div>
+      <Text as="div" size="2" weight="medium" mb="1">Sort by Price</Text>
+      <Select.Root value={sort} onValueChange={val => setSort(val as SortOption)}>
+        <Select.Trigger style={{ width: '100%' }} />
+        <Select.Content>
+          <Select.Item value="default">Default</Select.Item>
+          <Select.Item value="price-asc">Low to High</Select.Item>
+          <Select.Item value="price-desc">High to Low</Select.Item>
+        </Select.Content>
+      </Select.Root>
+    </div>
+
+    <Separator size="4" />
+
+    <div>
+      <Text as="div" size="2" weight="medium" mb="1">Min Price ($)</Text>
+      <input
+        type="number"
+        min={0}
+        placeholder="0"
+        value={minPrice}
+        onChange={e => setMinPrice(e.target.value)}
+        style={inputStyle}
+      />
+    </div>
+
+    <div>
+      <Text as="div" size="2" weight="medium" mb="1">Max Price ($)</Text>
+      <input
+        type="number"
+        min={0}
+        placeholder="Any"
+        value={maxPrice}
+        onChange={e => setMaxPrice(e.target.value)}
+        style={inputStyle}
+      />
+    </div>
+  </div>
+);
+
 const HomeScreen = () => {
   const { data: products, error, isLoading } = useGetProductsQuery();
-  const [sort, setSort]         = useState<SortOption>('default');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [sort, setSort]           = useState<SortOption>('default');
+  const [minPrice, setMinPrice]   = useState('');
+  const [maxPrice, setMaxPrice]   = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const filtered = useMemo(() => {
     if (!products) return [];
@@ -42,54 +94,55 @@ const HomeScreen = () => {
     <>
       <Heading size="6" mb="4">Latest Products</Heading>
 
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+      {/* ── Mobile filter dropdown ── */}
+      <div className="mobile-filter-bar">
+        <button
+          onClick={() => setMobileOpen(o => !o)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            width: '100%',
+            padding: '10px 14px',
+            borderRadius: 'var(--radius-3)',
+            border: '1px solid var(--gray-a7)',
+            background: 'var(--color-surface)',
+            color: 'var(--gray-12)',
+            cursor: 'pointer',
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          <SlidersHorizontal size={16} />
+          <span style={{ flex: 1, textAlign: 'left' }}>Filters</span>
+          {mobileOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
 
-        {/* ── Sidebar filters ── */}
-        <Card style={{ width: 180, flexShrink: 0, padding: '12px' }}>
+        {mobileOpen && (
+          <Card style={{ padding: '16px', marginTop: 8 }}>
+            <FilterControls
+              sort={sort} setSort={setSort}
+              minPrice={minPrice} setMinPrice={setMinPrice}
+              maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+            />
+          </Card>
+        )}
+      </div>
+
+      {/* ── Desktop layout ── */}
+      <div className="desktop-layout" style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+
+        {/* Sidebar */}
+        <Card className="desktop-sidebar" style={{ width: 180, flexShrink: 0, padding: '12px' }}>
           <Text size="2" weight="bold" mb="3" style={{ display: 'block' }}>Filters</Text>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div>
-              <Text as="div" size="2" weight="medium" mb="1">Sort by Price</Text>
-              <Select.Root value={sort} onValueChange={val => setSort(val as SortOption)}>
-                <Select.Trigger style={{ width: '100%' }} />
-                <Select.Content>
-                  <Select.Item value="default">Default</Select.Item>
-                  <Select.Item value="price-asc">Low to High</Select.Item>
-                  <Select.Item value="price-desc">High to Low</Select.Item>
-                </Select.Content>
-              </Select.Root>
-            </div>
-
-            <Separator size="4" />
-
-            <div>
-              <Text as="div" size="2" weight="medium" mb="1">Min Price ($)</Text>
-              <input
-                type="number"
-                min={0}
-                placeholder="0"
-                value={minPrice}
-                onChange={e => setMinPrice(e.target.value)}
-                style={inputStyle}
-              />
-            </div>
-
-            <div>
-              <Text as="div" size="2" weight="medium" mb="1">Max Price ($)</Text>
-              <input
-                type="number"
-                min={0}
-                placeholder="Any"
-                value={maxPrice}
-                onChange={e => setMaxPrice(e.target.value)}
-                style={inputStyle}
-              />
-            </div>
-          </div>
+          <FilterControls
+            sort={sort} setSort={setSort}
+            minPrice={minPrice} setMinPrice={setMinPrice}
+            maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+          />
         </Card>
 
-        {/* ── Product grid ── */}
+        {/* Product grid */}
         <div style={{ flex: 1, minWidth: 0 }}>
           {filtered.length === 0 ? (
             <Callout.Root color="blue">
@@ -109,6 +162,18 @@ const HomeScreen = () => {
           )}
         </div>
       </div>
+
+      <style>{`
+        .mobile-filter-bar  { display: none; }
+        .desktop-layout     { display: flex; }
+        .desktop-sidebar    { display: block; }
+
+        @media (max-width: 640px) {
+          .mobile-filter-bar { display: block; margin-bottom: 16px; }
+          .desktop-layout    { display: block; }
+          .desktop-sidebar   { display: none; }
+        }
+      `}</style>
     </>
   );
 };
