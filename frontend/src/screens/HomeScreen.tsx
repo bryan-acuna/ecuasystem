@@ -6,6 +6,7 @@ import { useGetProductsQuery } from '../services/product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import ProductComponent from '../components/Product';
+import SearchBar from '../components/SearchBar';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc';
 
@@ -94,29 +95,37 @@ const HomeScreen = () => {
     <>
       <Heading size="6" mb="4">Latest Products</Heading>
 
-      {/* ── Mobile filter dropdown ── */}
-      <div className="mobile-filter-bar">
-        <button
-          onClick={() => setMobileOpen(o => !o)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            width: '100%',
-            padding: '10px 14px',
-            borderRadius: 'var(--radius-3)',
-            border: '1px solid var(--gray-a7)',
-            background: 'var(--color-surface)',
-            color: 'var(--gray-12)',
-            cursor: 'pointer',
-            fontSize: 14,
-            fontWeight: 500,
-          }}
-        >
-          <SlidersHorizontal size={16} />
-          <span style={{ flex: 1, textAlign: 'left' }}>Filters</span>
-          {mobileOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
+      {/* ── Mobile search + filter row ── */}
+      <div className="mobile-filter-bar" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <SearchBar />
+          </div>
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            aria-label="Toggle filters"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              padding: '0 12px',
+              height: 32,
+              borderRadius: 'var(--radius-2)',
+              border: '1px solid var(--gray-a7)',
+              background: mobileOpen ? 'var(--accent-3)' : 'var(--color-surface)',
+              color: 'var(--gray-12)',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            <SlidersHorizontal size={14} />
+            <span>Filters</span>
+            {mobileOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </button>
+        </div>
 
         {mobileOpen && (
           <Card style={{ padding: '16px', marginTop: 8 }}>
