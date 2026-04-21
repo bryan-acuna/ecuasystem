@@ -68,10 +68,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.json({ message: 'API is working' });
-});
-
 // Routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
