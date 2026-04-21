@@ -24,7 +24,25 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Security middleware
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'https://images.unsplash.com',
+          'https://*.unsplash.com',
+        ],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        connectSrc: ["'self'", 'https://api.unsplash.com'],
+      },
+    },
+  })
+);
 
 // CORS configuration
 const corsOptions = {
