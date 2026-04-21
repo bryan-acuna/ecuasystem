@@ -1,142 +1,120 @@
-import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
-import Message from '../components/Message';
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Image,
-  ListGroup,
-  Row,
-} from 'react-bootstrap';
-
+import { Button, Card, Heading, Select, Text } from '@radix-ui/themes';
+import { Trash2, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaTrash } from 'react-icons/fa';
+import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { removeFromCart, updateItemQuantity } from '../slices/cartSlices';
 import { useCallback, useMemo } from 'react';
+import Message from '../components/Message';
 
-/**
- * CartScreen Component
- * Displays the shopping cart with items, quantities, and checkout functionality
- */
 const CartScreen = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { cartItems, itemsPrice, totalNumberItems } = useAppSelector(
-    state => state.cart
-  );
-  const handleQtyChange = useCallback(
-    (productId: string, qty: number) => {
-      dispatch(updateItemQuantity({ productId, qty }));
-    },
-    [dispatch]
-  );
-  const handleDelete = useCallback(
-    (id: string) => {
-      if (!window.confirm('Are you sure you want to remove this item?')) {
-        return;
-      }
-      dispatch(removeFromCart({ id }));
-    },
-    [dispatch]
-  );
-  const handleCheckout = useCallback(() => {
-    navigate('/login?redirect=/shipping');
-  }, [navigate]);
+  const { cartItems, itemsPrice, totalNumberItems } = useAppSelector(state => state.cart);
+
+  const handleQtyChange = useCallback((productId: string, qty: number) => {
+    dispatch(updateItemQuantity({ productId, qty }));
+  }, [dispatch]);
+
+  const handleDelete = useCallback((id: string) => {
+    if (!window.confirm('Remove this item?')) return;
+    dispatch(removeFromCart({ id }));
+  }, [dispatch]);
+
   const formattedPrice = useMemo(() => itemsPrice.toFixed(2), [itemsPrice]);
+
   if (cartItems.length === 0) {
     return (
       <Message variant="info">
-        <h1>Your Cart Is Empty</h1>
-        <p>Start shopping to add items to your cart.</p>
-        <Link to="/" className="btn btn-primary mt-3">
-          Continue Shopping
-        </Link>
+        <div>Your cart is empty. <Link to="/">Continue Shopping</Link></div>
       </Message>
     );
   }
+
   return (
-    <Row>
-      <Col md={8}>
-        <h1 style={{ marginBottom: '2rem' }}>Shopping Cart</h1>
-        <ListGroup>
-          {cartItems.map(item => (
-            <ListGroup.Item key={item.id}>
-              <Row>
-                <Col md={2}>
-                  <Image src={item.image} alt={item.name} fluid rounded />
-                </Col>
-                <Col md={3}>
-                  <Link to={`/product/${item.id}`}>{item.name}</Link>
-                </Col>
-                <Col md={2}>${item.price}</Col>
-                <Col md={2}>
-                  <Form.Select
-                    value={item.qty}
-                    onChange={e =>
-                      handleQtyChange(item.id, Number(e.target.value))
-                    }
-                    aria-label={`Quantity for ${item.name}`}
-                    disabled={item.countInStock === 0}
-                  >
-                    {[...Array(item.countInStock).keys()].map(x => (
-                      <option key={x + 1} value={x + 1}>
-                        {x + 1}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  {item.countInStock === 0 && (
-                    <small className="text-danger">Out of Stock</small>
-                  )}
-                </Col>
-                <Col md={2}>
-                  <Button
-                    onClick={() => handleDelete(item.id)}
-                    type="button"
-                    variant="light"
-                    aria-label={`Remove ${item.name} from cart`}
-                    title="Remove item"
-                  >
-                    <FaTrash />
-                  </Button>
-                </Col>
-              </Row>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Col>
-      <Col md={4}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
+      {/* responsive two-col layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1fr)', gap: 16, alignItems: 'start' }}
+        className="cart-grid">
+
+        {/* Items */}
+        <div>
+          <Heading size="5" mb="3">Shopping Cart</Heading>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {cartItems.map(item => (
+              <Card key={item.id} style={{ padding: '10px 12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 6, flexShrink: 0, background: 'var(--gray-2)' }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <Link
+                      to={`/product/${item.id}`}
+                      style={{ fontWeight: 600, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--gray-12)' }}
+                    >
+                      {item.name}
+                    </Link>
+                    <Text size="3" weight="bold" style={{ color: 'var(--accent-11)' }}>${item.price}</Text>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <Select.Root
+                      value={String(item.qty)}
+                      onValueChange={val => handleQtyChange(item.id, Number(val))}
+                      disabled={item.countInStock === 0}
+                      size="1"
+                    >
+                      <Select.Trigger style={{ width: 68 }} />
+                      <Select.Content>
+                        {Array.from({ length: item.countInStock }, (_, i) => (
+                          <Select.Item key={i + 1} value={String(i + 1)}>{i + 1}</Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <Button
+                      color="red"
+                      variant="soft"
+                      size="1"
+                      onClick={() => handleDelete(item.id)}
+                      aria-label="Remove item"
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Summary */}
         <Card>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <h2>
-                Subtotal ({totalNumberItems}){' '}
-                {totalNumberItems === 1 ? 'Item' : 'Items'}
-              </h2>
-              <h3 className="mt-2">${formattedPrice}</h3>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <div className="d-grid">
-                <Button
-                  onClick={handleCheckout}
-                  type="button"
-                  variant="primary"
-                  size="lg"
-                  disabled={totalNumberItems === 0}
-                >
-                  Checkout
-                </Button>
-              </div>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Link to="/" className="btn btn-outline-secondary w-100">
-                Continue Shopping
-              </Link>
-            </ListGroup.Item>
-          </ListGroup>
+          <Heading size="4" mb="2">
+            Subtotal ({totalNumberItems} {totalNumberItems === 1 ? 'Item' : 'Items'})
+          </Heading>
+          <Text size="6" weight="bold">${formattedPrice}</Text>
+          <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Button
+              size="3"
+              style={{ width: '100%' }}
+              disabled={totalNumberItems === 0}
+              onClick={() => navigate('/login?redirect=/shipping')}
+            >
+              <ShoppingCart size={16} /> Checkout
+            </Button>
+            <Link to="/">
+              <Button variant="outline" size="2" style={{ width: '100%' }}>Continue Shopping</Button>
+            </Link>
+          </div>
         </Card>
-      </Col>
-    </Row>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .cart-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </div>
   );
 };
 

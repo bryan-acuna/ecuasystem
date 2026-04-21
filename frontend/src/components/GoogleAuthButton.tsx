@@ -17,19 +17,17 @@ const GoogleAuthButton = ({ redirect = '/' }: Props) => {
   const handleSuccess = async (credentialResponse: { credential?: string }) => {
     if (!credentialResponse.credential) return;
     try {
-      const user = await googleAuth({
-        credential: credentialResponse.credential,
-      }).unwrap();
+      const user = await googleAuth({ credential: credentialResponse.credential }).unwrap();
       dispatch(setCredentials(user));
       toast.success(`Welcome, ${user.name}!`);
       navigate(redirect);
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.error || 'Google sign-in failed');
+      toast.error(err?.data?.message || 'Google sign-in failed');
     }
   };
 
   return (
-    <div className="d-flex justify-content-center mt-3">
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={() => toast.error('Google sign-in failed')}

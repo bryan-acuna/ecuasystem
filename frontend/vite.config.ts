@@ -1,11 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   server: {
-    port: 3000,
+    port: 3001,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
@@ -14,19 +20,16 @@ export default defineConfig({
     },
   },
   build: {
-    // Generate source maps for production debugging
     sourcemap: false,
-    // Optimize chunks
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'redux-vendor': ['@reduxjs/toolkit', 'react-redux'],
-          'ui-vendor': ['react-bootstrap', 'react-icons', 'react-toastify'],
+          'ui-vendor': ['@radix-ui/themes', 'lucide-react', 'react-toastify'],
         },
       },
     },
-    // Increase chunk size warning limit
     chunkSizeWarningLimit: 1000,
   },
 });

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Button, Card, Heading, Text, TextField, Separator } from '@radix-ui/themes';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { setCredentials } from '../slices/authSlice';
@@ -11,9 +11,9 @@ const ProfileScreen = () => {
   const dispatch = useAppDispatch();
   const { userInfo } = useAppSelector(state => state.auth);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName]                       = useState('');
+  const [email, setEmail]                     = useState('');
+  const [password, setPassword]               = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const { data: profile, isLoading, error } = useGetProfileQuery();
@@ -26,18 +26,10 @@ const ProfileScreen = () => {
     }
   }, [profile]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (password && password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
+    if (password && password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    if (password && password !== confirmPassword) { toast.error('Passwords do not match'); return; }
     try {
       const updated = await updateProfile({
         name,
@@ -49,7 +41,7 @@ const ProfileScreen = () => {
       setConfirmPassword('');
       toast.success('Profile updated successfully');
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.error || 'Failed to update profile');
+      toast.error(err?.data?.message || 'Failed to update profile');
     }
   };
 
@@ -57,68 +49,37 @@ const ProfileScreen = () => {
   if (error) return <Message variant="danger">Failed to load profile</Message>;
 
   return (
-    <Row className="justify-content-center">
-      <Col md={6}>
-        <Card className="p-4">
-          <h1 className="mb-1">My Profile</h1>
-          {userInfo?.isAdmin && (
-            <p className="text-muted mb-4" style={{ fontSize: '0.85rem' }}>
-              Administrator account
-            </p>
-          )}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <hr className="my-4" />
-            <p className="text-muted mb-3" style={{ fontSize: '0.85rem' }}>
-              Leave password fields blank to keep your current password.
-            </p>
-
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>New Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter new password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-4" controlId="confirmPassword">
-              <Form.Label>Confirm New Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-              />
-            </Form.Group>
-
-            <Button type="submit" variant="primary" disabled={isUpdating}>
-              {isUpdating ? 'Saving...' : 'Save Changes'}
-            </Button>
-          </Form>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '100%', maxWidth: 480 }}>
+        <Card style={{ marginTop: 16 }}>
+          <Heading size="6" mb="1">My Profile</Heading>
+          {userInfo?.isAdmin && <Text size="2" color="gray">Administrator account</Text>}
+          <form onSubmit={handleSubmit} style={{ marginTop: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Name</Text>
+                <TextField.Root value={name} onChange={e => setName(e.target.value)} required />
+              </label>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Email</Text>
+                <TextField.Root type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              </label>
+              <Separator size="4" />
+              <Text size="2" color="gray" weight="medium">Change Password (optional)</Text>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">New Password</Text>
+                <TextField.Root type="password" placeholder="Leave blank to keep current" value={password} onChange={e => setPassword(e.target.value)} />
+              </label>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Confirm New Password</Text>
+                <TextField.Root type="password" placeholder="Confirm new password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+              </label>
+              <Button type="submit" size="3" loading={isUpdating}>Save Changes</Button>
+            </div>
+          </form>
         </Card>
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 

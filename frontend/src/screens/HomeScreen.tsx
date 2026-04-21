@@ -1,93 +1,114 @@
-import ProductComponent from '../components/Product';
-import { Alert, Col, Form, Row } from 'react-bootstrap';
+import { useState, useMemo } from 'react';
+import { Heading, Select, Text, Callout, Card, Separator } from '@radix-ui/themes';
+import { Info } from 'lucide-react';
 import type { Product } from '../types/Product';
 import { useGetProductsQuery } from '../services/product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { useState, useMemo } from 'react';
+import ProductComponent from '../components/Product';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc';
 
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  height: 32,
+  borderRadius: 'var(--radius-2)',
+  border: '1px solid var(--gray-a7)',
+  padding: '0 8px',
+  background: 'var(--color-surface)',
+  color: 'var(--gray-12)',
+};
+
 const HomeScreen = () => {
   const { data: products, error, isLoading } = useGetProductsQuery();
-  const [sort, setSort] = useState<SortOption>('default');
+  const [sort, setSort]         = useState<SortOption>('default');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
   const filtered = useMemo(() => {
     if (!products) return [];
     let result = [...products];
-
-    const min = minPrice !== '' ? parseFloat(minPrice) : null;
-    const max = maxPrice !== '' ? parseFloat(maxPrice) : null;
-
-    if (min !== null) result = result.filter(p => p.price >= min);
-    if (max !== null) result = result.filter(p => p.price <= max);
-
-    if (sort === 'price-asc') result.sort((a, b) => a.price - b.price);
+    if (minPrice) result = result.filter(p => p.price >= Number(minPrice));
+    if (maxPrice) result = result.filter(p => p.price <= Number(maxPrice));
+    if (sort === 'price-asc')  result.sort((a, b) => a.price - b.price);
     if (sort === 'price-desc') result.sort((a, b) => b.price - a.price);
-
     return result;
   }, [products, sort, minPrice, maxPrice]);
 
   if (isLoading) return <Loader />;
-
-  if (error) {
-    return (
-      <Message variant="danger">
-        {'status' in error
-          ? `Error: ${error.status}`
-          : 'An error occurred while fetching products'}
-      </Message>
-    );
-  }
+  if (error) return <Message variant="danger">An error occurred while fetching products</Message>;
 
   return (
     <>
-      <h1>Latest Products</h1>
+      <Heading size="6" mb="4">Latest Products</Heading>
 
-      <Row className="align-items-end mb-4 g-2">
-        <Col xs={12} sm={4} md={3}>
-          <Form.Label className="fw-semibold mb-1">Sort by Price</Form.Label>
-          <Form.Select value={sort} onChange={e => setSort(e.target.value as SortOption)}>
-            <option value="default">Default</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </Form.Select>
-        </Col>
-        <Col xs={6} sm={4} md={2}>
-          <Form.Label className="fw-semibold mb-1">Min Price ($)</Form.Label>
-          <Form.Control
-            type="number"
-            min={0}
-            placeholder="0"
-            value={minPrice}
-            onChange={e => setMinPrice(e.target.value)}
-          />
-        </Col>
-        <Col xs={6} sm={4} md={2}>
-          <Form.Label className="fw-semibold mb-1">Max Price ($)</Form.Label>
-          <Form.Control
-            type="number"
-            min={0}
-            placeholder="Any"
-            value={maxPrice}
-            onChange={e => setMaxPrice(e.target.value)}
-          />
-        </Col>
-      </Row>
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
 
-      {filtered.length === 0 ? (
-        <Alert variant="info">No products match the selected price range.</Alert>
-      ) : (
-        <Row>
-          {filtered.map((product: Product) => (
-            <Col key={product.id} sm={12} md={6} lg={4} xl={3}>
-              <ProductComponent {...product} />
-            </Col>
-          ))}
-        </Row>
-      )}
+        {/* ── Sidebar filters ── */}
+        <Card style={{ width: 180, flexShrink: 0, padding: '12px' }}>
+          <Text size="2" weight="bold" mb="3" style={{ display: 'block' }}>Filters</Text>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div>
+              <Text as="div" size="2" weight="medium" mb="1">Sort by Price</Text>
+              <Select.Root value={sort} onValueChange={val => setSort(val as SortOption)}>
+                <Select.Trigger style={{ width: '100%' }} />
+                <Select.Content>
+                  <Select.Item value="default">Default</Select.Item>
+                  <Select.Item value="price-asc">Low to High</Select.Item>
+                  <Select.Item value="price-desc">High to Low</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </div>
+
+            <Separator size="4" />
+
+            <div>
+              <Text as="div" size="2" weight="medium" mb="1">Min Price ($)</Text>
+              <input
+                type="number"
+                min={0}
+                placeholder="0"
+                value={minPrice}
+                onChange={e => setMinPrice(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <Text as="div" size="2" weight="medium" mb="1">Max Price ($)</Text>
+              <input
+                type="number"
+                min={0}
+                placeholder="Any"
+                value={maxPrice}
+                onChange={e => setMaxPrice(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* ── Product grid ── */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {filtered.length === 0 ? (
+            <Callout.Root color="blue">
+              <Callout.Icon><Info size={16} /></Callout.Icon>
+              <Callout.Text>No products match the selected price range.</Callout.Text>
+            </Callout.Root>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: 16,
+            }}>
+              {filtered.map((product: Product) => (
+                <ProductComponent key={product.id} {...product} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 };

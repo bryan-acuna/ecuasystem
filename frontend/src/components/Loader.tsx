@@ -1,21 +1,9 @@
-import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Flex, Spinner } from '@radix-ui/themes';
 
-const Loader = () => {
-  return (
-    <Spinner
-      animation="border"
-      role="status"
-      style={{
-        width: '10rem',
-        height: '10rem',
-        margin: 'auto',
-        display: 'block',
-      }}
-    >
-      <span className="visually-hidden">Loading ...</span>
-    </Spinner>
-  );
-};
+const Loader = () => (
+  <Flex justify="center" align="center" style={{ padding: '3rem 0' }}>
+    <Spinner size="3" />
+  </Flex>
+);
 
 export default Loader;

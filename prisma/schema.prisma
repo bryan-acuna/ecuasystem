@@ -12,6 +12,7 @@ model Product {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   image        String
+  images       String[]
   brand        String
   category     String
   description  String

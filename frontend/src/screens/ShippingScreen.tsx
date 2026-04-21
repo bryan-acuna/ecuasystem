@@ -1,28 +1,22 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
-import FormContainer from '../components/FormContainer';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Card, Heading, Text, TextField } from '@radix-ui/themes';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
-import {
-  saveShippingAddress,
-  selectShippingAddress,
-} from '../slices/cartSlices';
+import { saveShippingAddress, selectShippingAddress } from '../slices/cartSlices';
 import CheckoutSteps from '../components/CheckoutSteps';
+import FormContainer from '../components/FormContainer';
 
 const ShippingScreen = () => {
   const shippingAddress = useAppSelector(selectShippingAddress);
-  const [address, setAddress] = useState(shippingAddress?.address || '');
-  const [city, setCity] = useState(shippingAddress?.city || '');
-  const [postalCode, setPostalCode] = useState(
-    shippingAddress?.postalCode || ''
-  );
-  const [country, setCountry] = useState(shippingAddress?.country || '');
-
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleSubmit = (e: FormEvent) => {
+  const [address, setAddress]       = useState(shippingAddress?.address    || '');
+  const [city, setCity]             = useState(shippingAddress?.city        || '');
+  const [postalCode, setPostalCode] = useState(shippingAddress?.postalCode  || '');
+  const [country, setCountry]       = useState(shippingAddress?.country     || '');
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
     navigate('/payment');
@@ -30,54 +24,32 @@ const ShippingScreen = () => {
 
   return (
     <>
-      <CheckoutSteps step1={true} step2={true} />
+      <CheckoutSteps step1 step2 />
       <FormContainer>
-        <h1>Shipping</h1>
-        <Form onSubmit={handleSubmit} className="text-start">
-          <Form.Group className="my-3" controlId="address">
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter address"
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="my-3" controlId="city">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter city"
-              value={city}
-              onChange={e => setCity(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="my-3" controlId="postalCode">
-            <Form.Label>Postal Code</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter postal code"
-              value={postalCode}
-              onChange={e => setPostalCode(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="my-3" controlId="country">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter country"
-              value={country}
-              onChange={e => setCountry(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Button className="mt-2" variant="primary" type="submit">
-            Continue
-          </Button>
-        </Form>
+        <Card style={{ marginTop: 16 }}>
+          <Heading size="6" mb="4">Shipping</Heading>
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Address</Text>
+                <TextField.Root placeholder="Enter address" value={address} onChange={e => setAddress(e.target.value)} required />
+              </label>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">City</Text>
+                <TextField.Root placeholder="Enter city" value={city} onChange={e => setCity(e.target.value)} required />
+              </label>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Postal Code</Text>
+                <TextField.Root placeholder="Enter postal code" value={postalCode} onChange={e => setPostalCode(e.target.value)} required />
+              </label>
+              <label>
+                <Text as="div" size="2" weight="medium" mb="1">Country</Text>
+                <TextField.Root placeholder="Enter country" value={country} onChange={e => setCountry(e.target.value)} required />
+              </label>
+              <Button type="submit" size="3">Continue</Button>
+            </div>
+          </form>
+        </Card>
       </FormContainer>
     </>
   );

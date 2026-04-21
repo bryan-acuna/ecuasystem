@@ -11,7 +11,7 @@ export const productApi = api.injectEndpoints({
     getProductById: builder.query<Product, string>({
       query: id => `/products/${id}`,
       keepUnusedDataFor: 5,
-      providesTags: (result, error, id) => [{ type: 'Product', id }],
+      providesTags: (_result, _error, id) => [{ type: 'Product', id }],
     }),
     getProductsByCategory: builder.query<Product[], string>({
       query: category => `/products?category=${encodeURIComponent(category)}`,
@@ -26,6 +26,21 @@ export const productApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Product'],
     }),
+    updateProduct: builder.mutation<Product, Partial<Omit<Product, 'rating' | 'numReviews'>> & { id: string }>({
+      query: ({ id, ...body }) => ({
+        url: `/products/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Product'],
+    }),
+    deleteProduct: builder.mutation<{ message: string }, string>({
+      query: id => ({
+        url: `/products/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Product'],
+    }),
   }),
 });
 
@@ -34,4 +49,6 @@ export const {
   useGetProductByIdQuery,
   useGetProductsByCategoryQuery,
   useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
 } = productApi;

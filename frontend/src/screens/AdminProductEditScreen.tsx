@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Heading, Select, Text, TextArea, TextField } from '@radix-ui/themes';
-import { Plus, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useCreateProductMutation } from '../services/product';
+import { useGetProductByIdQuery, useUpdateProductMutation } from '../services/product';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 const CATEGORIES = ['Electronics', 'Phones', 'Tablets', 'Computers', 'Accessories', 'Other'];
 
-const AdminProductScreen = () => {
+const AdminProductEditScreen = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [createProduct, { isLoading }] = useCreateProductMutation();
 
   const [name, setName]                 = useState('');
   const [price, setPrice]               = useState('');
@@ -20,50 +22,75 @@ const AdminProductScreen = () => {
   const [countInStock, setCountInStock] = useState('');
   const [description, setDescription]   = useState('');
 
-  const addImage    = ()              => setImages(prev => [...prev, '']);
-  const removeImage = (i: number)     => setImages(prev => prev.filter((_, idx) => idx !== i));
+  const { data: product, isLoading, error } = useGetProductByIdQuery(id!);
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setPrice(String(product.price));
+      setImage(product.image);
+      setImages(product.images ?? []);
+      setBrand(product.brand);
+      setCategory(product.category);
+      setCountInStock(String(product.countInStock));
+      setDescription(product.description);
+    }
+  }, [product]);
+
+  const addImage    = ()               => setImages(prev => [...prev, '']);
+  const removeImage = (i: number)      => setImages(prev => prev.filter((_, idx) => idx !== i));
   const updateImage = (i: number, v: string) => setImages(prev => prev.map((img, idx) => idx === i ? v : img));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createProduct({
+      await updateProduct({
+        id: id!,
         name, price: Number(price), image, images: images.filter(Boolean),
         brand, category, countInStock: Number(countInStock), description,
       }).unwrap();
-      toast.success('Product created successfully');
-      navigate('/');
+      toast.success('Product updated successfully');
+      navigate('/admin/products');
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.error || 'Failed to create product');
+      toast.error(err?.data?.message || 'Failed to update product');
     }
   };
+
+  if (isLoading) return <Loader />;
+  if (error) return <Message variant="danger">Failed to load product</Message>;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: 640 }}>
         <Card style={{ marginTop: 16 }}>
-          <Heading size="6" mb="4">Add New Product</Heading>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <Button variant="outline" size="2" onClick={() => navigate('/admin/products')}>
+              <ArrowLeft size={14} /> Back
+            </Button>
+            <Heading size="6">Edit Product</Heading>
+          </div>
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <label>
                 <Text as="div" size="2" weight="medium" mb="1">Product Name</Text>
-                <TextField.Root placeholder="Enter product name" value={name} onChange={e => setName(e.target.value)} required />
+                <TextField.Root value={name} onChange={e => setName(e.target.value)} required />
               </label>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <label>
                   <Text as="div" size="2" weight="medium" mb="1">Price ($)</Text>
-                  <TextField.Root type="number" min="0" step="0.01" placeholder="0.00" value={price} onChange={e => setPrice(e.target.value)} required />
+                  <TextField.Root type="number" min="0" step="0.01" value={price} onChange={e => setPrice(e.target.value)} required />
                 </label>
                 <label>
                   <Text as="div" size="2" weight="medium" mb="1">Count In Stock</Text>
-                  <TextField.Root type="number" min="0" placeholder="0" value={countInStock} onChange={e => setCountInStock(e.target.value)} required />
+                  <TextField.Root type="number" min="0" value={countInStock} onChange={e => setCountInStock(e.target.value)} required />
                 </label>
               </div>
 
               <label>
                 <Text as="div" size="2" weight="medium" mb="1">Brand</Text>
-                <TextField.Root placeholder="Enter brand" value={brand} onChange={e => setBrand(e.target.value)} required />
+                <TextField.Root value={brand} onChange={e => setBrand(e.target.value)} required />
               </label>
 
               <div>
@@ -78,8 +105,17 @@ const AdminProductScreen = () => {
 
               <label>
                 <Text as="div" size="2" weight="medium" mb="1">Primary Image URL</Text>
-                <TextField.Root placeholder="https://example.com/image.jpg" value={image} onChange={e => setImage(e.target.value)} required />
+                <TextField.Root value={image} onChange={e => setImage(e.target.value)} required />
               </label>
+
+              {/* Image preview */}
+              {image && (
+                <img
+                  src={image}
+                  alt="Preview"
+                  style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 6, background: 'var(--gray-2)' }}
+                />
+              )}
 
               {/* Additional images */}
               <div>
@@ -104,12 +140,12 @@ const AdminProductScreen = () => {
 
               <label>
                 <Text as="div" size="2" weight="medium" mb="1">Description</Text>
-                <TextArea rows={3} placeholder="Enter product description" value={description} onChange={e => setDescription(e.target.value)} required />
+                <TextArea rows={3} value={description} onChange={e => setDescription(e.target.value)} required />
               </label>
 
               <div style={{ display: 'flex', gap: 8 }}>
-                <Button type="submit" size="3" loading={isLoading}>Create Product</Button>
-                <Button type="button" variant="outline" size="3" onClick={() => navigate('/')}>Cancel</Button>
+                <Button type="submit" size="3" loading={isUpdating}>Save Changes</Button>
+                <Button type="button" variant="outline" size="3" onClick={() => navigate('/admin/products')}>Cancel</Button>
               </div>
             </div>
           </form>
@@ -119,4 +155,4 @@ const AdminProductScreen = () => {
   );
 };
 
-export default AdminProductScreen;
+export default AdminProductEditScreen;

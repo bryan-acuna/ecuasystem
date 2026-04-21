@@ -1,41 +1,45 @@
-import React from 'react';
-import type { CartItem } from '../types';
-import { Col, Image, ListGroup, Row } from 'react-bootstrap';
+import { Text, Heading } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
+import type { CartItem } from '../types';
 import Message from './Message';
 
 interface OrderItemListProps {
   cartItems: CartItem[];
 }
 
-const OrderItemList = ({ cartItems }: OrderItemListProps) => {
-  return (
-    <div>
-      <h2>Order Items</h2>
-      {cartItems.length === 0 ? (
-        <Message> Your cart is empty</Message>
-      ) : (
-        <ListGroup>
-          {cartItems.map((item, index) => (
-            <ListGroup.Item key={index}>
-              <Row>
-                <Col md={2}>
-                  <Image src={item.image} fluid rounded alt={item.name} />
-                </Col>
-                <Col>
-                  <Link to={`/product/${item.productId}`}>{item.name}</Link>
-                </Col>
-                <Col md={4}>
-                  {item.qty} X ${item.price} = $
-                  {(item.qty * item.price).toFixed(2)}
-                </Col>
-              </Row>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      )}
-    </div>
-  );
-};
+const OrderItemList = ({ cartItems }: OrderItemListProps) => (
+  <div>
+    <Heading size="4" mb="3">Order Items</Heading>
+    {cartItems.length === 0 ? (
+      <Message>Your cart is empty</Message>
+    ) : (
+      <div style={{ border: '1px solid var(--gray-a6)', borderRadius: 'var(--radius-3)', overflow: 'hidden' }}>
+        {cartItems.map((item, idx) => (
+          <div
+            key={item.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '10px 12px',
+              borderBottom: idx < cartItems.length - 1 ? '1px solid var(--gray-a6)' : 'none',
+              flexWrap: 'wrap',
+            }}
+          >
+            <img src={item.image} alt={item.name} className="order-item-image" />
+            <div style={{ flex: 1, minWidth: 100 }}>
+              <Link to={`/product/${item.id}`} style={{ fontWeight: 500, color: 'var(--accent-11)' }}>
+                {item.name}
+              </Link>
+            </div>
+            <Text size="2" style={{ flexShrink: 0 }}>
+              {item.qty} × ${item.price} = <strong>${(item.qty * item.price).toFixed(2)}</strong>
+            </Text>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
 
 export default OrderItemList;

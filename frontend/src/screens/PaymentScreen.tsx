@@ -1,67 +1,52 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
-import FormContainer from '../components/FormContainer';
-import { Button, Form, Col } from 'react-bootstrap';
+import { Button, Card, Heading, RadioGroup, Text } from '@radix-ui/themes';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { savePaymentMethod } from '../slices/cartSlices';
 import type { PaymentMethod } from '../types';
+import FormContainer from '../components/FormContainer';
 
 const PaymentScreen = () => {
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('PayPal');
-
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { shippingAddress } = useAppSelector(state => state.cart);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('PayPal');
 
-  // Redirect to shipping if no shipping address
   if (!shippingAddress) {
     navigate('/shipping');
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Dispatch payment method to Redux
     dispatch(savePaymentMethod(paymentMethod));
     navigate('/place-order');
   };
 
   return (
     <FormContainer>
-      <CheckoutSteps step3={true} step1={true} step2={true} />
-      <h1>Payment Method</h1>
-      <Form onSubmit={handleSubmit} className="text-start">
-        <Form.Group className="my-3">
-          <Form.Label as="legend">Select Method</Form.Label>
-          <Col>
-            <Form.Check
-              type="radio"
-              className="my-2"
-              label="PayPal or Credit Card"
-              id="PayPal"
-              name="paymentMethod"
-              value="PayPal"
-              checked
-              onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-            />
-            <Form.Check
-              type="radio"
-              className="my-2"
-              label="Stripe"
-              id="Stripe"
-              name="paymentMethod"
-              value="Stripe"
-              checked={paymentMethod === 'Stripe'}
-              onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-            />
-          </Col>
-        </Form.Group>
-
-        <Button className="mt-2" variant="primary" type="submit">
-          Continue
-        </Button>
-      </Form>
+      <CheckoutSteps step1 step2 step3 />
+      <Card style={{ marginTop: 16 }}>
+        <Heading size="6" mb="4">Payment Method</Heading>
+        <form onSubmit={handleSubmit}>
+          <Text as="div" size="2" weight="medium" mb="3">Select Method</Text>
+          <RadioGroup.Root
+            value={paymentMethod}
+            onValueChange={val => setPaymentMethod(val as PaymentMethod)}
+            mb="4"
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Text as="label" size="3">
+                <RadioGroup.Item value="PayPal" /> PayPal or Credit Card
+              </Text>
+              <Text as="label" size="3">
+                <RadioGroup.Item value="Stripe" /> Stripe
+              </Text>
+            </div>
+          </RadioGroup.Root>
+          <Button type="submit" size="3">Continue</Button>
+        </form>
+      </Card>
     </FormContainer>
   );
 };

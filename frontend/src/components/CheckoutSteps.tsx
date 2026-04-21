@@ -1,6 +1,5 @@
-import React from 'react';
-import { Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Text } from '@radix-ui/themes';
+import { useNavigate } from 'react-router-dom';
 
 interface CheckoutStepsProps {
   step1?: boolean;
@@ -9,46 +8,61 @@ interface CheckoutStepsProps {
   step4?: boolean;
 }
 
+const steps = [
+  { title: 'Sign In',     path: '/login' },
+  { title: 'Shipping',    path: '/shipping' },
+  { title: 'Payment',     path: '/payment' },
+  { title: 'Place Order', path: '/place-order' },
+];
+
 const CheckoutSteps = ({ step1, step2, step3, step4 }: CheckoutStepsProps) => {
+  const navigate = useNavigate();
+  const flags = [step1, step2, step3, step4];
+  const current = step4 ? 3 : step3 ? 2 : step2 ? 1 : 0;
+
   return (
-    <Nav>
-      <Nav.Item>
-        {step1 ? (
-          <LinkContainer to="/login">
-            <Nav.Link>Sign In</Nav.Link>
-          </LinkContainer>
-        ) : (
-          <Nav.Link disabled>Sign In</Nav.Link>
-        )}
-      </Nav.Item>
-      <Nav.Item>
-        {step2 ? (
-          <LinkContainer to="/shipping">
-            <Nav.Link>Shipping</Nav.Link>
-          </LinkContainer>
-        ) : (
-          <Nav.Link disabled>Shipping</Nav.Link>
-        )}
-      </Nav.Item>
-      <Nav.Item>
-        {step3 ? (
-          <LinkContainer to="/payment">
-            <Nav.Link>Payment</Nav.Link>
-          </LinkContainer>
-        ) : (
-          <Nav.Link disabled>Payment</Nav.Link>
-        )}
-      </Nav.Item>
-      <Nav.Item>
-        {step4 ? (
-          <LinkContainer to="/place-order">
-            <Nav.Link>Place Order</Nav.Link>
-          </LinkContainer>
-        ) : (
-          <Nav.Link disabled>Place Order</Nav.Link>
-        )}
-      </Nav.Item>
-    </Nav>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24, overflowX: 'auto' }}>
+      {steps.map((step, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              opacity: flags[i] ? 1 : 0.4,
+              cursor: flags[i] ? 'pointer' : 'default',
+            }}
+            onClick={() => flags[i] && navigate(step.path)}
+          >
+            <div style={{
+              width: 28,
+              height: 28,
+              borderRadius: '50%',
+              background: i <= current && flags[i] ? 'var(--accent-9)' : 'var(--gray-a5)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 12,
+              fontWeight: 600,
+              flexShrink: 0,
+            }}>
+              {i + 1}
+            </div>
+            <Text
+              size="2"
+              weight={i === current ? 'bold' : 'regular'}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {step.title}
+            </Text>
+          </div>
+          {i < steps.length - 1 && (
+            <div style={{ width: 32, height: 1, background: 'var(--gray-a5)', margin: '0 8px', flexShrink: 0 }} />
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -1,57 +1,31 @@
-import React, { Children } from 'react';
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import { Card, Heading, Text, Separator, Flex } from '@radix-ui/themes';
+import type { ReactNode } from 'react';
 
 interface OrderSummaryCardProps {
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const OrderSummaryCard = ({
-  itemsPrice,
-  shippingPrice,
-  taxPrice,
-  totalPrice,
-  children,
-}: OrderSummaryCardProps) => {
-  return (
-    <div>
-      <Card>
-        <ListGroup variant="flush">
-          <ListGroup.Item>
-            <h2>Order Summary</h2>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
-              <Col>Items:</Col>
-              <Col>${itemsPrice}</Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
-              <Col>Shipping:</Col>
-              <Col>${shippingPrice}</Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
-              <Col>Tax:</Col>
-              <Col>${taxPrice}</Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Row>
-              <Col>Total:</Col>
-              <Col>${totalPrice}</Col>
-            </Row>
-          </ListGroup.Item>
-          <ListGroup.Item>{children}</ListGroup.Item>
-        </ListGroup>
-      </Card>
-    </div>
-  );
-};
+const SummaryRow = ({ label, value }: { label: string; value: string }) => (
+  <Flex justify="between" py="1">
+    <Text>{label}</Text>
+    <Text weight="bold">{value}</Text>
+  </Flex>
+);
+
+const OrderSummaryCard = ({ itemsPrice, shippingPrice, taxPrice, totalPrice, children }: OrderSummaryCardProps) => (
+  <Card>
+    <Heading size="4" mb="3">Order Summary</Heading>
+    <SummaryRow label="Items:"    value={`$${itemsPrice}`} />
+    <SummaryRow label="Shipping:" value={`$${shippingPrice}`} />
+    <SummaryRow label="Tax:"      value={`$${taxPrice}`} />
+    <Separator size="4" my="2" />
+    <SummaryRow label="Total:"    value={`$${totalPrice}`} />
+    {children && <div style={{ marginTop: 16 }}>{children}</div>}
+  </Card>
+);
 
 export default OrderSummaryCard;
