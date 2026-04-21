@@ -11,6 +11,11 @@ import orderRoutes from './routes/orderRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
 import validateEnv from './config/validateEnv.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 validateEnv();
@@ -78,10 +83,12 @@ app.get('/api/config/paypal', (req, res) =>
 );
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(Path2D.join(__dirname, '/frontend/build')));
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
   app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+    res.sendFile(
+      path.resolve(__dirname, '..', 'frontend', 'dist', 'index.html')
+    )
   );
 } else {
   app.get('/', (req, res) => {
