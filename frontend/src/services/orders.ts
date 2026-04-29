@@ -19,16 +19,11 @@ const ordersApi = api.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
     payOrder: builder.mutation<Order, { orderId: string; details: any }>({
-      query: ({ orderId, details }) => {
-        console.log('Order ID:', orderId);
-        console.log('Payment details:', details);
-
-        return {
-          url: `/orders/${orderId}/pay`,
-          method: 'PUT',
-          body: { ...details },
-        };
-      },
+      query: ({ orderId, details }) => ({
+        url: `/orders/${orderId}/pay`,
+        method: 'PUT',
+        body: { ...details },
+      }),
     }),
     getMyOrders: builder.query<Order[], void>({
       query: () => '/orders/mine',
