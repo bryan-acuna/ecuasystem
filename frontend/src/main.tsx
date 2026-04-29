@@ -34,6 +34,7 @@ import MyOrdersScreen from './screens/MyOrdersScreen.tsx';
 import SearchScreen from './screens/SearchScreen.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from './context/ThemeContext.tsx';
+import './i18n';
 
 const router = createBrowserRouter(
   createRoutesFromElements(

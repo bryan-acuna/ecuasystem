@@ -1,0 +1,178 @@
+{
+  "nav": {
+    "cart": "Carrito",
+    "signIn": "Iniciar sesión",
+    "profile": "Perfil",
+    "myOrders": "Mis pedidos",
+    "admin": "Admin",
+    "manageProducts": "Gestionar productos",
+    "addProduct": "Agregar producto",
+    "logOut": "Cerrar sesión",
+    "menu": "Menú",
+    "categories": "Categorías",
+    "searchPlaceholder": "Buscar productos..."
+  },
+  "categories": {
+    "phones": "Teléfonos",
+    "tablets": "Tabletas",
+    "electronics": "Electrónica",
+    "computers": "Computadoras"
+  },
+  "home": {
+    "latestProducts": "Últimos productos",
+    "filters": "Filtros",
+    "sortByPrice": "Ordenar por precio",
+    "sortDefault": "Por defecto",
+    "sortLowHigh": "Menor a mayor",
+    "sortHighLow": "Mayor a menor",
+    "minPrice": "Precio mínimo ($)",
+    "maxPrice": "Precio máximo ($)",
+    "noProducts": "Ningún producto coincide con el rango de precios seleccionado."
+  },
+  "product": {
+    "goBack": "Volver",
+    "price": "Precio:",
+    "status": "Estado:",
+    "inStock": "En stock",
+    "outOfStock": "Sin stock",
+    "addToCart": "Agregar al carrito",
+    "reviews": "reseñas",
+    "invalidId": "ID de producto no válido",
+    "errorFetching": "Error al obtener el producto",
+    "notFound": "Producto no encontrado"
+  },
+  "cart": {
+    "title": "Carrito de compras",
+    "empty": "Tu carrito está vacío.",
+    "continueShopping": "Seguir comprando",
+    "subtotal": "Subtotal",
+    "item": "Artículo",
+    "items": "Artículos",
+    "checkout": "Pagar",
+    "removeItem": "Eliminar artículo",
+    "confirmRemove": "¿Eliminar este artículo?"
+  },
+  "checkout": {
+    "signIn": "Iniciar sesión",
+    "shipping": "Envío",
+    "payment": "Pago",
+    "placeOrder": "Realizar pedido"
+  },
+  "shipping": {
+    "title": "Envío",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "postalCode": "Código postal",
+    "country": "País",
+    "continue": "Continuar",
+    "enterAddress": "Ingresa la dirección",
+    "enterCity": "Ingresa la ciudad",
+    "enterPostalCode": "Ingresa el código postal",
+    "enterCountry": "Ingresa el país"
+  },
+  "payment": {
+    "title": "Método de pago",
+    "selectMethod": "Seleccionar método",
+    "continue": "Continuar"
+  },
+  "placeOrder": {
+    "shipping": "Envío",
+    "paymentMethod": "Método de pago",
+    "method": "Método:",
+    "placeOrder": "Realizar pedido"
+  },
+  "orderSummary": {
+    "title": "Resumen del pedido",
+    "items": "Artículos:",
+    "shipping": "Envío:",
+    "tax": "Impuesto:",
+    "total": "Total:"
+  },
+  "orderItems": {
+    "title": "Artículos del pedido",
+    "empty": "Tu carrito está vacío"
+  },
+  "order": {
+    "title": "Pedido",
+    "shipping": "Envío",
+    "name": "Nombre:",
+    "email": "Correo:",
+    "address": "Dirección:",
+    "delivered": "Entregado el",
+    "notDelivered": "No entregado",
+    "paymentMethod": "Método de pago",
+    "method": "Método:",
+    "paid": "Pagado el",
+    "notPaid": "No pagado",
+    "goBack": "Volver",
+    "invalidId": "ID de pedido no válido",
+    "notFound": "Pedido no encontrado",
+    "paymentSuccess": "¡Pago exitoso!",
+    "paymentFailed": "Pago fallido. Inténtalo de nuevo.",
+    "paypalNotConfigured": "PayPal no está configurado. Contacta al soporte."
+  },
+  "myOrders": {
+    "title": "Mis pedidos",
+    "noOrders": "Aún no tienes pedidos.",
+    "id": "ID",
+    "date": "Fecha",
+    "total": "Total",
+    "paid": "Pagado",
+    "delivered": "Entregado",
+    "details": "Detalles",
+    "notPaid": "No pagado",
+    "notDelivered": "No entregado",
+    "errorLoading": "Error al cargar los pedidos"
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "admin": "Cuenta de administrador",
+    "name": "Nombre",
+    "email": "Correo",
+    "changePassword": "Cambiar contraseña (opcional)",
+    "newPassword": "Nueva contraseña",
+    "newPasswordPlaceholder": "Dejar en blanco para mantener la actual",
+    "confirmNewPassword": "Confirmar nueva contraseña",
+    "confirmNewPasswordPlaceholder": "Confirma la nueva contraseña",
+    "saveChanges": "Guardar cambios",
+    "errorLoading": "Error al cargar el perfil",
+    "updateSuccess": "Perfil actualizado correctamente",
+    "passwordShort": "La contraseña debe tener al menos 6 caracteres",
+    "passwordMismatch": "Las contraseñas no coinciden"
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo",
+    "password": "Contraseña",
+    "name": "Nombre",
+    "confirmPassword": "Confirmar contraseña",
+    "enterEmail": "Ingresa el correo",
+    "enterPassword": "Ingresa la contraseña",
+    "enterName": "Ingresa el nombre",
+    "enterConfirmPassword": "Confirma la contraseña",
+    "newCustomer": "¿Eres nuevo?",
+    "returningCustomer": "¿Ya tienes cuenta?",
+    "loginLink": "Iniciar sesión",
+    "registerLink": "Registrarse",
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "registrationFailed": "Error al registrarse",
+    "passwordShort": "La contraseña debe tener al menos 6 caracteres",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "welcomeBack": "¡Bienvenido de nuevo, {{name}}!",
+    "welcomeNew": "¡Bienvenido, {{name}}! Tu cuenta ha sido creada.",
+    "googleFailed": "Error al iniciar sesión con Google",
+    "logoutFailed": "Error al cerrar sesión"
+  },
+  "search": {
+    "resultsFor": "Resultados para",
+    "productsFound_one": "{{count}} producto encontrado",
+    "productsFound_other": "{{count}} productos encontrados",
+    "noResults": "No se encontraron productos para \"{{query}}\". Prueba otro término.",
+    "errorLoading": "Error al cargar los productos"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "errorOccurred": "Ocurrió un error al obtener los productos"
+  }
+}

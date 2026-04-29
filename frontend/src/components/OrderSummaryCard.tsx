@@ -1,5 +1,6 @@
 import { Card, Heading, Text, Separator, Flex } from '@radix-ui/themes';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface OrderSummaryCardProps {
   itemsPrice: number;
@@ -16,16 +17,19 @@ const SummaryRow = ({ label, value }: { label: string; value: string }) => (
   </Flex>
 );
 
-const OrderSummaryCard = ({ itemsPrice, shippingPrice, taxPrice, totalPrice, children }: OrderSummaryCardProps) => (
-  <Card>
-    <Heading size="4" mb="3">Order Summary</Heading>
-    <SummaryRow label="Items:"    value={`$${itemsPrice}`} />
-    <SummaryRow label="Shipping:" value={`$${shippingPrice}`} />
-    <SummaryRow label="Tax:"      value={`$${taxPrice}`} />
-    <Separator size="4" my="2" />
-    <SummaryRow label="Total:"    value={`$${totalPrice}`} />
-    {children && <div style={{ marginTop: 16 }}>{children}</div>}
-  </Card>
-);
+const OrderSummaryCard = ({ itemsPrice, shippingPrice, taxPrice, totalPrice, children }: OrderSummaryCardProps) => {
+  const { t } = useTranslation();
+  return (
+    <Card>
+      <Heading size="4" mb="3">{t('orderSummary.title')}</Heading>
+      <SummaryRow label={t('orderSummary.items')}    value={`$${itemsPrice}`} />
+      <SummaryRow label={t('orderSummary.shipping')} value={`$${shippingPrice}`} />
+      <SummaryRow label={t('orderSummary.tax')}      value={`$${taxPrice}`} />
+      <Separator size="4" my="2" />
+      <SummaryRow label={t('orderSummary.total')}    value={`$${totalPrice}`} />
+      {children && <div style={{ marginTop: 16 }}>{children}</div>}
+    </Card>
+  );
+};
 
 export default OrderSummaryCard;

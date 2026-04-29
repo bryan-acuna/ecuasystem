@@ -7,8 +7,10 @@ import type { Product } from '../types/Product';
 import ProductComponent from '../components/Product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { useTranslation } from 'react-i18next';
 
 const SearchScreen = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
   const { data: products, isLoading, error } = useGetProductsQuery();
@@ -26,19 +28,19 @@ const SearchScreen = () => {
   }, [products, query]);
 
   if (isLoading) return <Loader />;
-  if (error) return <Message variant="danger">Failed to load products</Message>;
+  if (error) return <Message variant="danger">{t('search.errorLoading')}</Message>;
 
   return (
     <>
-      <Heading size="6" mb="1">Results for <em>"{query}"</em></Heading>
+      <Heading size="6" mb="1">{t('search.resultsFor')} <em>"{query}"</em></Heading>
       <Text size="2" color="gray" style={{ display: 'block', marginBottom: 16 }}>
-        {results.length} product{results.length !== 1 ? 's' : ''} found
+        {t('search.productsFound', { count: results.length })}
       </Text>
 
       {results.length === 0 ? (
         <Callout.Root color="blue">
           <Callout.Icon><Info size={16} /></Callout.Icon>
-          <Callout.Text>No products found for "{query}". Try a different search term.</Callout.Text>
+          <Callout.Text>{t('search.noResults', { query })}</Callout.Text>
         </Callout.Root>
       ) : (
         <div style={{

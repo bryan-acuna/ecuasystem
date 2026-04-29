@@ -5,8 +5,10 @@ import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { removeFromCart, updateItemQuantity } from '../slices/cartSlices';
 import { useCallback, useMemo } from 'react';
 import Message from '../components/Message';
+import { useTranslation } from 'react-i18next';
 
 const CartScreen = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { cartItems, itemsPrice, totalNumberItems } = useAppSelector(state => state.cart);
@@ -16,29 +18,28 @@ const CartScreen = () => {
   }, [dispatch]);
 
   const handleDelete = useCallback((id: string) => {
-    if (!window.confirm('Remove this item?')) return;
+    if (!window.confirm(t('cart.confirmRemove'))) return;
     dispatch(removeFromCart({ id }));
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   const formattedPrice = useMemo(() => itemsPrice.toFixed(2), [itemsPrice]);
 
   if (cartItems.length === 0) {
     return (
       <Message variant="info">
-        <div>Your cart is empty. <Link to="/">Continue Shopping</Link></div>
+        <div>{t('cart.empty')} <Link to="/">{t('cart.continueShopping')}</Link></div>
       </Message>
     );
   }
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
-      {/* responsive two-col layout */}
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1fr)', gap: 16, alignItems: 'start' }}
         className="cart-grid">
 
         {/* Items */}
         <div>
-          <Heading size="5" mb="3">Shopping Cart</Heading>
+          <Heading size="5" mb="3">{t('cart.title')}</Heading>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {cartItems.map(item => (
               <Card key={item.id} style={{ padding: '10px 12px' }}>
@@ -76,7 +77,7 @@ const CartScreen = () => {
                       variant="soft"
                       size="1"
                       onClick={() => handleDelete(item.id)}
-                      aria-label="Remove item"
+                      aria-label={t('cart.removeItem')}
                     >
                       <Trash2 size={14} />
                     </Button>
@@ -90,7 +91,7 @@ const CartScreen = () => {
         {/* Summary */}
         <Card>
           <Heading size="4" mb="2">
-            Subtotal ({totalNumberItems} {totalNumberItems === 1 ? 'Item' : 'Items'})
+            {t('cart.subtotal')} ({totalNumberItems} {totalNumberItems === 1 ? t('cart.item') : t('cart.items')})
           </Heading>
           <Text size="6" weight="bold">${formattedPrice}</Text>
           <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -100,10 +101,10 @@ const CartScreen = () => {
               disabled={totalNumberItems === 0}
               onClick={() => navigate('/login?redirect=/shipping')}
             >
-              <ShoppingCart size={16} /> Checkout
+              <ShoppingCart size={16} /> {t('cart.checkout')}
             </Button>
             <Link to="/">
-              <Button variant="outline" size="2" style={{ width: '100%' }}>Continue Shopping</Button>
+              <Button variant="outline" size="2" style={{ width: '100%' }}>{t('cart.continueShopping')}</Button>
             </Link>
           </div>
         </Card>

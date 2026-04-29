@@ -6,8 +6,10 @@ import CheckoutSteps from '../components/CheckoutSteps';
 import { savePaymentMethod } from '../slices/cartSlices';
 import type { PaymentMethod } from '../types';
 import FormContainer from '../components/FormContainer';
+import { useTranslation } from 'react-i18next';
 
 const PaymentScreen = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { shippingAddress } = useAppSelector(state => state.cart);
@@ -27,9 +29,9 @@ const PaymentScreen = () => {
     <FormContainer>
       <CheckoutSteps step1 step2 step3 />
       <Card style={{ marginTop: 16 }}>
-        <Heading size="6" mb="4">Payment Method</Heading>
+        <Heading size="6" mb="4">{t('payment.title')}</Heading>
         <form onSubmit={handleSubmit}>
-          <Text as="div" size="2" weight="medium" mb="3">Select Method</Text>
+          <Text as="div" size="2" weight="medium" mb="3">{t('payment.selectMethod')}</Text>
           <RadioGroup.Root
             value={paymentMethod}
             onValueChange={val => setPaymentMethod(val as PaymentMethod)}
@@ -44,7 +46,7 @@ const PaymentScreen = () => {
               </Text>
             </div>
           </RadioGroup.Root>
-          <Button type="submit" size="3">Continue</Button>
+          <Button type="submit" size="3">{t('payment.continue')}</Button>
         </form>
       </Card>
     </FormContainer>

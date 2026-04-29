@@ -13,8 +13,10 @@ import { toast } from 'react-toastify';
 import { useMemo } from 'react';
 import OrderSummaryCard from '../components/OrderSummaryCard';
 import OrderItemList from '../components/OrderItemList';
+import { useTranslation } from 'react-i18next';
 
 const OrderScreen = () => {
+  const { t } = useTranslation();
   const { id: orderId } = useParams<{ id: string }>();
   const { data: order, error, isLoading, refetch } = useGetOrderDetailsQuery(orderId || '', { skip: !orderId });
   const { data: paypalConfig, isLoading: isLoadingPayPal } = useGetPayPalClientIdQuery();
@@ -26,49 +28,49 @@ const OrderScreen = () => {
   );
 
   const GoBack = (
-    <Link to="/"><Button variant="outline" size="2" mb="4"><ArrowLeft size={14} /> Go Back</Button></Link>
+    <Link to="/"><Button variant="outline" size="2" mb="4"><ArrowLeft size={14} /> {t('order.goBack')}</Button></Link>
   );
 
-  if (!orderId) return <>{GoBack}<Message variant="danger">Invalid ORDER ID</Message></>;
+  if (!orderId) return <>{GoBack}<Message variant="danger">{t('order.invalidId')}</Message></>;
   if (isLoading) return <Loader />;
   if (error) return <>{GoBack}<Message variant="danger">{'status' in error ? `Error: ${error.status}` : 'An error occurred'}</Message></>;
-  if (!order) return <>{GoBack}<Message variant="info">Order not found</Message></>;
+  if (!order) return <>{GoBack}<Message variant="info">{t('order.notFound')}</Message></>;
 
   const handlePaymentSuccess = async (details: any) => {
     try {
       await payOrder({ orderId: order.id, details: { id: details.id, status: details.status, update_time: details.update_time, payer: details.payer } }).unwrap();
       refetch();
-      toast.success('Payment successful!');
-    } catch { toast.error('Payment failed. Please try again.'); }
+      toast.success(t('order.paymentSuccess'));
+    } catch { toast.error(t('order.paymentFailed')); }
   };
 
   return (
     <>
       {GoBack}
-      <Heading size="6" mb="4">Order {order.id}</Heading>
+      <Heading size="6" mb="4">{t('order.title')} {order.id}</Heading>
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1fr)', gap: 24, alignItems: 'start' }}
         className="order-grid">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <Card>
-            <Heading size="4" mb="3">Shipping</Heading>
+            <Heading size="4" mb="3">{t('order.shipping')}</Heading>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <Text size="2"><strong>Name:</strong> {order.user.name}</Text>
-              <Text size="2"><strong>Email:</strong> {order.user.email}</Text>
-              <Text size="2"><strong>Address:</strong> {`${order.shippingAddress?.address}, ${order.shippingAddress?.city} ${order.shippingAddress?.postalCode}, ${order.shippingAddress?.country}`}</Text>
+              <Text size="2"><strong>{t('order.name')}</strong> {order.user.name}</Text>
+              <Text size="2"><strong>{t('order.email')}</strong> {order.user.email}</Text>
+              <Text size="2"><strong>{t('order.address')}</strong> {`${order.shippingAddress?.address}, ${order.shippingAddress?.city} ${order.shippingAddress?.postalCode}, ${order.shippingAddress?.country}`}</Text>
             </div>
             <div style={{ marginTop: 8 }}>
               {order.isDelivered
-                ? <Message variant="success">Delivered on {order.deliveredAt}</Message>
-                : <Message variant="danger">Not Delivered</Message>}
+                ? <Message variant="success">{t('order.delivered')} {order.deliveredAt}</Message>
+                : <Message variant="danger">{t('order.notDelivered')}</Message>}
             </div>
           </Card>
           <Card>
-            <Heading size="4" mb="2">Payment Method</Heading>
-            <Text>Method: {order.paymentMethod}</Text>
+            <Heading size="4" mb="2">{t('order.paymentMethod')}</Heading>
+            <Text>{t('order.method')} {order.paymentMethod}</Text>
             <div style={{ marginTop: 8 }}>
               {order.isPaid
-                ? <Message variant="success">Paid on {order.paidAt}</Message>
-                : <Message variant="danger">Not Paid</Message>}
+                ? <Message variant="success">{t('order.paid')} {order.paidAt}</Message>
+                : <Message variant="danger">{t('order.notPaid')}</Message>}
             </div>
           </Card>
           <Card>
@@ -91,12 +93,12 @@ const OrderScreen = () => {
                     <PayPalButtons
                       style={{ layout: 'vertical' }}
                       onApprove={(_data, actions) => actions.order!.capture().then(handlePaymentSuccess)}
-                      onError={() => toast.error('Payment failed. Please try again.')}
+                      onError={() => toast.error(t('order.paymentFailed'))}
                     />
                   )}
                 </PayPalScriptProvider>
               ) : (
-                <Message variant="danger">PayPal is not configured. Please contact support.</Message>
+                <Message variant="danger">{t('order.paypalNotConfigured')}</Message>
               )}
             </Card>
           )}

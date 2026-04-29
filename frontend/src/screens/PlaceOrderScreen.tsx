@@ -10,8 +10,10 @@ import { useCreateOrderMutation } from '../services/orders';
 import { toast } from 'react-toastify';
 import OrderSummaryCard from '../components/OrderSummaryCard';
 import OrderItemList from '../components/OrderItemList';
+import { useTranslation } from 'react-i18next';
 
 const PlaceOrderScreen = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const shippingAddress = useAppSelector(selectShippingAddress);
@@ -49,14 +51,14 @@ const PlaceOrderScreen = () => {
         className="placeorder-grid">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <Card>
-            <Heading size="4" mb="3">Shipping</Heading>
+            <Heading size="4" mb="3">{t('placeOrder.shipping')}</Heading>
             <Text size="2" color="gray">
               {`${shippingAddress?.address}, ${shippingAddress?.city} ${shippingAddress?.postalCode}, ${shippingAddress?.country}`}
             </Text>
           </Card>
           <Card>
-            <Heading size="4" mb="2">Payment Method</Heading>
-            <Text>Method: {paymentMethod}</Text>
+            <Heading size="4" mb="2">{t('placeOrder.paymentMethod')}</Heading>
+            <Text>{t('placeOrder.method')} {paymentMethod}</Text>
           </Card>
           <Card>
             <OrderItemList cartItems={cartItems} />
@@ -75,7 +77,7 @@ const PlaceOrderScreen = () => {
             onClick={placeOrderHandler}
             loading={isLoading}
           >
-            Place Order
+            {t('placeOrder.placeOrder')}
           </Button>
         </OrderSummaryCard>
       </div>

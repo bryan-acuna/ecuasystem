@@ -1,5 +1,6 @@
 import { Text } from '@radix-ui/themes';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface CheckoutStepsProps {
   step1?: boolean;
@@ -8,17 +9,18 @@ interface CheckoutStepsProps {
   step4?: boolean;
 }
 
-const steps = [
-  { title: 'Sign In',     path: '/login' },
-  { title: 'Shipping',    path: '/shipping' },
-  { title: 'Payment',     path: '/payment' },
-  { title: 'Place Order', path: '/place-order' },
-];
-
 const CheckoutSteps = ({ step1, step2, step3, step4 }: CheckoutStepsProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const flags = [step1, step2, step3, step4];
   const current = step4 ? 3 : step3 ? 2 : step2 ? 1 : 0;
+
+  const steps = [
+    { title: t('checkout.signIn'),    path: '/login' },
+    { title: t('checkout.shipping'),  path: '/shipping' },
+    { title: t('checkout.payment'),   path: '/payment' },
+    { title: t('checkout.placeOrder'), path: '/place-order' },
+  ];
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24, overflowX: 'auto' }}>

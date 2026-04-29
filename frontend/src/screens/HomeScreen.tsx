@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import ProductComponent from '../components/Product';
 import SearchBar from '../components/SearchBar';
+import { useTranslation } from 'react-i18next';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc';
 
@@ -29,53 +30,57 @@ const FilterControls = ({
   setMinPrice: (v: string) => void;
   maxPrice: string;
   setMaxPrice: (v: string) => void;
-}) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-    <div>
-      <Text as="div" size="2" weight="medium" mb="1">Sort by Price</Text>
-      <Select.Root value={sort} onValueChange={val => setSort(val as SortOption)}>
-        <Select.Trigger style={{ width: '100%' }} />
-        <Select.Content>
-          <Select.Item value="default">Default</Select.Item>
-          <Select.Item value="price-asc">Low to High</Select.Item>
-          <Select.Item value="price-desc">High to Low</Select.Item>
-        </Select.Content>
-      </Select.Root>
-    </div>
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div>
+        <Text as="div" size="2" weight="medium" mb="1">{t('home.sortByPrice')}</Text>
+        <Select.Root value={sort} onValueChange={val => setSort(val as SortOption)}>
+          <Select.Trigger style={{ width: '100%' }} />
+          <Select.Content>
+            <Select.Item value="default">{t('home.sortDefault')}</Select.Item>
+            <Select.Item value="price-asc">{t('home.sortLowHigh')}</Select.Item>
+            <Select.Item value="price-desc">{t('home.sortHighLow')}</Select.Item>
+          </Select.Content>
+        </Select.Root>
+      </div>
 
-    <Separator size="4" />
+      <Separator size="4" />
 
-    <div>
-      <Text as="div" size="2" weight="medium" mb="1">Min Price ($)</Text>
-      <input
-        type="number"
-        min={0}
-        placeholder="0"
-        value={minPrice}
-        onChange={e => setMinPrice(e.target.value)}
-        style={inputStyle}
-      />
-    </div>
+      <div>
+        <Text as="div" size="2" weight="medium" mb="1">{t('home.minPrice')}</Text>
+        <input
+          type="number"
+          min={0}
+          placeholder="0"
+          value={minPrice}
+          onChange={e => setMinPrice(e.target.value)}
+          style={inputStyle}
+        />
+      </div>
 
-    <div>
-      <Text as="div" size="2" weight="medium" mb="1">Max Price ($)</Text>
-      <input
-        type="number"
-        min={0}
-        placeholder="Any"
-        value={maxPrice}
-        onChange={e => setMaxPrice(e.target.value)}
-        style={inputStyle}
-      />
+      <div>
+        <Text as="div" size="2" weight="medium" mb="1">{t('home.maxPrice')}</Text>
+        <input
+          type="number"
+          min={0}
+          placeholder="Any"
+          value={maxPrice}
+          onChange={e => setMaxPrice(e.target.value)}
+          style={inputStyle}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const HomeScreen = () => {
+  const { t } = useTranslation();
   const { data: products, error, isLoading } = useGetProductsQuery();
-  const [sort, setSort]           = useState<SortOption>('default');
-  const [minPrice, setMinPrice]   = useState('');
-  const [maxPrice, setMaxPrice]   = useState('');
+  const [sort, setSort]             = useState<SortOption>('default');
+  const [minPrice, setMinPrice]     = useState('');
+  const [maxPrice, setMaxPrice]     = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const filtered = useMemo(() => {
@@ -89,11 +94,11 @@ const HomeScreen = () => {
   }, [products, sort, minPrice, maxPrice]);
 
   if (isLoading) return <Loader />;
-  if (error) return <Message variant="danger">An error occurred while fetching products</Message>;
+  if (error) return <Message variant="danger">{t('common.errorOccurred')}</Message>;
 
   return (
     <>
-      <Heading size="6" mb="4">Latest Products</Heading>
+      <Heading size="6" mb="4">{t('home.latestProducts')}</Heading>
 
       {/* ── Mobile search + filter row ── */}
       <div className="mobile-filter-bar" style={{ marginBottom: 16 }}>
@@ -122,7 +127,7 @@ const HomeScreen = () => {
             }}
           >
             <SlidersHorizontal size={14} />
-            <span>Filters</span>
+            <span>{t('home.filters')}</span>
             {mobileOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           </button>
         </div>
@@ -143,7 +148,7 @@ const HomeScreen = () => {
 
         {/* Sidebar */}
         <Card className="desktop-sidebar" style={{ width: 180, flexShrink: 0, padding: '12px' }}>
-          <Text size="2" weight="bold" mb="3" style={{ display: 'block' }}>Filters</Text>
+          <Text size="2" weight="bold" mb="3" style={{ display: 'block' }}>{t('home.filters')}</Text>
           <FilterControls
             sort={sort} setSort={setSort}
             minPrice={minPrice} setMinPrice={setMinPrice}
@@ -156,7 +161,7 @@ const HomeScreen = () => {
           {filtered.length === 0 ? (
             <Callout.Root color="blue">
               <Callout.Icon><Info size={16} /></Callout.Icon>
-              <Callout.Text>No products match the selected price range.</Callout.Text>
+              <Callout.Text>{t('home.noProducts')}</Callout.Text>
             </Callout.Root>
           ) : (
             <div style={{

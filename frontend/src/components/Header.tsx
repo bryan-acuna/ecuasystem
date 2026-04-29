@@ -3,7 +3,7 @@ import { Button, IconButton, TextField, DropdownMenu } from '@radix-ui/themes';
 import {
   ShoppingCart, User, Plus, Search, Sun, Moon,
   Menu, ChevronDown, X, Smartphone, Laptop,
-  Zap, Monitor, LogIn, LogOut, ListOrdered,
+  Zap, Monitor, LogIn, LogOut, ListOrdered, Globe,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -11,19 +11,14 @@ import { useTheme } from '../context/ThemeContext';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { removeCredentials } from '../slices/authSlice';
 import { useLogoutMutation } from '../services/user';
-
-const CATEGORIES = [
-  { label: 'Phones',      path: '/category/phones',      Icon: Smartphone },
-  { label: 'Tablets',     path: '/category/tablets',     Icon: Laptop },
-  { label: 'Electronics', path: '/category/electronics', Icon: Zap },
-  { label: 'Computers',   path: '/category/computers',   Icon: Monitor },
-];
+import { useTranslation } from 'react-i18next';
 
 const NAV_BG     = '#0f172a';
 const SUBNAV_BG  = '#1a2235';
 const LINK_COLOR = '#94a3b8';
 
 const Header = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { totalNumberItems } = useAppSelector(state => state.cart);
   const { userInfo }         = useAppSelector(state => state.auth);
@@ -34,6 +29,19 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen]   = useState(false);
   const isDark = theme === 'dark';
 
+  const CATEGORIES = [
+    { label: t('categories.phones'),      path: '/category/phones',      Icon: Smartphone },
+    { label: t('categories.tablets'),     path: '/category/tablets',     Icon: Laptop },
+    { label: t('categories.electronics'), path: '/category/electronics', Icon: Zap },
+    { label: t('categories.computers'),   path: '/category/computers',   Icon: Monitor },
+  ];
+
+  const toggleLang = () => {
+    const next = i18n.language === 'en' ? 'es' : 'en';
+    i18n.changeLanguage(next);
+    localStorage.setItem('lang', next);
+  };
+
   const logoutHandler = async () => {
     setDrawerOpen(false);
     try {
@@ -42,7 +50,7 @@ const Header = () => {
       navigate('/login');
       toast.success(message);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Logout failed');
+      toast.error(err?.data?.message || t('auth.logoutFailed'));
     }
   };
 
@@ -54,9 +62,6 @@ const Header = () => {
 
   return (
     <>
-      {/* ════════════════════════════════════
-          Sticky wrapper — both bars together
-      ════════════════════════════════════ */}
       <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
 
         {/* ── Main Navbar ── */}
@@ -89,7 +94,7 @@ const Header = () => {
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
             <div className="desktop-search" style={{ width: '100%', maxWidth: 440 }}>
               <TextField.Root
-                placeholder="Search products..."
+                placeholder={t('nav.searchPlaceholder')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
@@ -107,6 +112,17 @@ const Header = () => {
           {/* Right actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0, marginLeft: 16 }}>
 
+            {/* Language toggle */}
+            <IconButton
+              variant="ghost" size="2"
+              onClick={toggleLang}
+              style={{ color: LINK_COLOR }}
+              aria-label="Toggle language"
+              title={i18n.language === 'en' ? 'Cambiar a español' : 'Switch to English'}
+            >
+              <Globe size={16} />
+            </IconButton>
+
             {/* Cart with badge */}
             <div style={{ position: 'relative', display: 'inline-flex' }}>
               <Button
@@ -115,7 +131,7 @@ const Header = () => {
                 style={{ color: LINK_COLOR }}
               >
                 <ShoppingCart size={18} />
-                <span className="desktop-only" style={{ marginLeft: 4 }}>Cart</span>
+                <span className="desktop-only" style={{ marginLeft: 4 }}>{t('nav.cart')}</span>
               </Button>
               {totalNumberItems > 0 && (
                 <span style={{
@@ -139,7 +155,7 @@ const Header = () => {
               )}
             </div>
 
-            {/* Single user/admin dropdown — desktop only */}
+            {/* User dropdown — desktop only */}
             <div className="desktop-only">
               {userInfo ? (
                 <DropdownMenu.Root>
@@ -149,29 +165,29 @@ const Header = () => {
                     </Button>
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Content>
-                    <DropdownMenu.Item onClick={() => navigate('/profile')}>Profile</DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => navigate('/my-orders')}>My Orders</DropdownMenu.Item>
+                    <DropdownMenu.Item onClick={() => navigate('/profile')}>{t('nav.profile')}</DropdownMenu.Item>
+                    <DropdownMenu.Item onClick={() => navigate('/my-orders')}>{t('nav.myOrders')}</DropdownMenu.Item>
                     {userInfo.isAdmin && (
                       <>
                         <DropdownMenu.Separator />
-                        <DropdownMenu.Label>Admin</DropdownMenu.Label>
+                        <DropdownMenu.Label>{t('nav.admin')}</DropdownMenu.Label>
                         <DropdownMenu.Item onClick={() => navigate('/admin/products')}>
-                          <Monitor size={14} /> Manage Products
+                          <Monitor size={14} /> {t('nav.manageProducts')}
                         </DropdownMenu.Item>
                         <DropdownMenu.Item onClick={() => navigate('/admin/product/new')}>
-                          <Plus size={14} /> Add Product
+                          <Plus size={14} /> {t('nav.addProduct')}
                         </DropdownMenu.Item>
                       </>
                     )}
                     <DropdownMenu.Separator />
                     <DropdownMenu.Item color="red" onClick={logoutHandler}>
-                      <LogOut size={14} /> Log Out
+                      <LogOut size={14} /> {t('nav.logOut')}
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
               ) : (
                 <Button variant="ghost" size="2" onClick={() => navigate('/login')} style={{ color: LINK_COLOR }}>
-                  <User size={16} /> Sign In
+                  <User size={16} /> {t('nav.signIn')}
                 </Button>
               )}
             </div>
@@ -201,14 +217,13 @@ const Header = () => {
             position: 'relative',
           }}
         >
-          {/* Menu dropdown — stays left */}
           <DropdownMenu.Root>
             <DropdownMenu.Trigger>
               <Button
                 variant="ghost" size="2"
                 style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 13, height: 40, borderRadius: 0 }}
               >
-                <Menu size={14} /> Menu <ChevronDown size={10} />
+                <Menu size={14} /> {t('nav.menu')} <ChevronDown size={10} />
               </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
@@ -220,7 +235,6 @@ const Header = () => {
             </DropdownMenu.Content>
           </DropdownMenu.Root>
 
-          {/* Category links — centered */}
           <div style={{
             position: 'absolute',
             left: '50%',
@@ -253,18 +267,13 @@ const Header = () => {
         </div>
       </div>
 
-      {/* ════════════════════════════════════
-          Mobile Drawer
-      ════════════════════════════════════ */}
+      {/* ── Mobile Drawer ── */}
       {drawerOpen && (
         <>
-          {/* Overlay */}
           <div
             onClick={() => setDrawerOpen(false)}
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 200 }}
           />
-
-          {/* Drawer panel */}
           <div style={{
             position: 'fixed',
             top: 0, left: 0, bottom: 0,
@@ -275,8 +284,6 @@ const Header = () => {
             display: 'flex',
             flexDirection: 'column',
           }}>
-
-            {/* Drawer header */}
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '0 16px', height: 56,
@@ -286,15 +293,19 @@ const Header = () => {
               <Link to="/" onClick={() => setDrawerOpen(false)} style={{ fontWeight: 700, fontSize: 18, color: 'var(--gray-12)' }}>
                 Ecuasystems
               </Link>
-              <IconButton variant="ghost" size="2" onClick={() => setDrawerOpen(false)} aria-label="Close">
-                <X size={18} />
-              </IconButton>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <IconButton variant="ghost" size="2" onClick={toggleLang} aria-label="Toggle language">
+                  <Globe size={16} />
+                </IconButton>
+                <IconButton variant="ghost" size="2" onClick={() => setDrawerOpen(false)} aria-label="Close">
+                  <X size={18} />
+                </IconButton>
+              </div>
             </div>
 
-            {/* Mobile search */}
             <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-a6)' }}>
               <TextField.Root
-                placeholder="Search products..."
+                placeholder={t('nav.searchPlaceholder')}
                 onKeyDown={e => {
                   if (e.key === 'Enter') handleSearch((e.target as HTMLInputElement).value);
                 }}
@@ -305,32 +316,31 @@ const Header = () => {
               </TextField.Root>
             </div>
 
-            {/* Section label */}
-            <SectionLabel>Categories</SectionLabel>
+            <SectionLabel>{t('nav.categories')}</SectionLabel>
             {CATEGORIES.map(({ label, path, Icon }) => (
               <DrawerLink key={path} to={path} onClose={() => setDrawerOpen(false)}>
                 <Icon size={16} style={{ color: 'var(--gray-9)', flexShrink: 0 }} /> {label}
               </DrawerLink>
             ))}
 
-            <SectionLabel>Account</SectionLabel>
+            <SectionLabel>{t('nav.profile')}</SectionLabel>
             {userInfo ? (
               <>
                 {userInfo.isAdmin && (
                   <>
                     <DrawerLink to="/admin/products" onClose={() => setDrawerOpen(false)}>
-                      <Monitor size={16} style={{ color: 'var(--gray-9)' }} /> Manage Products
+                      <Monitor size={16} style={{ color: 'var(--gray-9)' }} /> {t('nav.manageProducts')}
                     </DrawerLink>
                     <DrawerLink to="/admin/product/new" onClose={() => setDrawerOpen(false)}>
-                      <Plus size={16} style={{ color: 'var(--gray-9)' }} /> Add Product
+                      <Plus size={16} style={{ color: 'var(--gray-9)' }} /> {t('nav.addProduct')}
                     </DrawerLink>
                   </>
                 )}
                 <DrawerLink to="/profile" onClose={() => setDrawerOpen(false)}>
-                  <User size={16} style={{ color: 'var(--gray-9)' }} /> Profile
+                  <User size={16} style={{ color: 'var(--gray-9)' }} /> {t('nav.profile')}
                 </DrawerLink>
                 <DrawerLink to="/my-orders" onClose={() => setDrawerOpen(false)}>
-                  <ListOrdered size={16} style={{ color: 'var(--gray-9)' }} /> My Orders
+                  <ListOrdered size={16} style={{ color: 'var(--gray-9)' }} /> {t('nav.myOrders')}
                 </DrawerLink>
                 <button
                   onClick={logoutHandler}
@@ -342,12 +352,12 @@ const Header = () => {
                     borderBottom: '1px solid var(--gray-a4)',
                   }}
                 >
-                  <LogOut size={16} /> Log Out
+                  <LogOut size={16} /> {t('nav.logOut')}
                 </button>
               </>
             ) : (
               <DrawerLink to="/login" onClose={() => setDrawerOpen(false)}>
-                <LogIn size={16} style={{ color: 'var(--gray-9)' }} /> Sign In
+                <LogIn size={16} style={{ color: 'var(--gray-9)' }} /> {t('nav.signIn')}
               </DrawerLink>
             )}
           </div>
@@ -356,8 +366,6 @@ const Header = () => {
     </>
   );
 };
-
-/* ── Small helpers to reduce repetition ── */
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <div style={{

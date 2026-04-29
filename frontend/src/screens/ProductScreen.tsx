@@ -8,8 +8,10 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useAppDispatch } from '../store/hook/hooks';
 import { addToCart } from '../slices/cartSlices';
+import { useTranslation } from 'react-i18next';
 
 const ProductScreen = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id: productId } = useParams<{ id: string }>();
@@ -17,10 +19,10 @@ const ProductScreen = () => {
 
   const { data: product, error, isLoading } = useGetProductByIdQuery(productId || '', { skip: !productId });
 
-  if (!productId) return <Message variant="danger">Invalid product ID</Message>;
+  if (!productId) return <Message variant="danger">{t('product.invalidId')}</Message>;
   if (isLoading) return <Loader />;
-  if (error) return <Message variant="danger">Error fetching product</Message>;
-  if (!product) return <Message variant="info">Product not found</Message>;
+  if (error) return <Message variant="danger">{t('product.errorFetching')}</Message>;
+  if (!product) return <Message variant="info">{t('product.notFound')}</Message>;
 
   const allImages = [product.image, ...(product.images?.filter(img => img && img !== product.image) ?? [])];
 
@@ -34,7 +36,7 @@ const ProductScreen = () => {
 
   return (
     <>
-      <Link to="/"><Button variant="outline" size="2" mb="4"><ArrowLeft size={14} /> Go Back</Button></Link>
+      <Link to="/"><Button variant="outline" size="2" mb="4"><ArrowLeft size={14} /> {t('product.goBack')}</Button></Link>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 280px', gap: 24, alignItems: 'start' }}
         className="product-grid">
@@ -96,7 +98,7 @@ const ProductScreen = () => {
         {/* Details */}
         <div>
           <Heading size="5" mb="2">{product.name}</Heading>
-          <Rating rating={product.rating} numReviews={`${product.numReviews} reviews`} />
+          <Rating rating={product.rating} numReviews={`${product.numReviews} ${t('product.reviews')}`} />
           <Text size="6" weight="bold" style={{ color: 'var(--accent-11)', display: 'block', margin: '12px 0' }}>
             ${product.price}
           </Text>
@@ -107,14 +109,14 @@ const ProductScreen = () => {
         <Card>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text weight="medium">Price:</Text>
+              <Text weight="medium">{t('product.price')}</Text>
               <Text weight="bold">${product.price}</Text>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text weight="medium">Status:</Text>
+              <Text weight="medium">{t('product.status')}</Text>
               {product.countInStock > 0
-                ? <Badge color="green">In Stock</Badge>
-                : <Badge color="red">Out of Stock</Badge>}
+                ? <Badge color="green">{t('product.inStock')}</Badge>
+                : <Badge color="red">{t('product.outOfStock')}</Badge>}
             </div>
             <Button
               size="3"
@@ -122,7 +124,7 @@ const ProductScreen = () => {
               disabled={product.countInStock === 0}
               onClick={handleAddToCart}
             >
-              <ShoppingCart size={16} /> Add To Cart
+              <ShoppingCart size={16} /> {t('product.addToCart')}
             </Button>
           </div>
         </Card>

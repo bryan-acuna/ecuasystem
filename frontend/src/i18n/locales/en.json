@@ -1,0 +1,178 @@
+{
+  "nav": {
+    "cart": "Cart",
+    "signIn": "Sign In",
+    "profile": "Profile",
+    "myOrders": "My Orders",
+    "admin": "Admin",
+    "manageProducts": "Manage Products",
+    "addProduct": "Add Product",
+    "logOut": "Log Out",
+    "menu": "Menu",
+    "categories": "Categories",
+    "searchPlaceholder": "Search products..."
+  },
+  "categories": {
+    "phones": "Phones",
+    "tablets": "Tablets",
+    "electronics": "Electronics",
+    "computers": "Computers"
+  },
+  "home": {
+    "latestProducts": "Latest Products",
+    "filters": "Filters",
+    "sortByPrice": "Sort by Price",
+    "sortDefault": "Default",
+    "sortLowHigh": "Low to High",
+    "sortHighLow": "High to Low",
+    "minPrice": "Min Price ($)",
+    "maxPrice": "Max Price ($)",
+    "noProducts": "No products match the selected price range."
+  },
+  "product": {
+    "goBack": "Go Back",
+    "price": "Price:",
+    "status": "Status:",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "addToCart": "Add To Cart",
+    "reviews": "reviews",
+    "invalidId": "Invalid product ID",
+    "errorFetching": "Error fetching product",
+    "notFound": "Product not found"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "item": "Item",
+    "items": "Items",
+    "checkout": "Checkout",
+    "removeItem": "Remove item",
+    "confirmRemove": "Remove this item?"
+  },
+  "checkout": {
+    "signIn": "Sign In",
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "placeOrder": "Place Order"
+  },
+  "shipping": {
+    "title": "Shipping",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "continue": "Continue",
+    "enterAddress": "Enter address",
+    "enterCity": "Enter city",
+    "enterPostalCode": "Enter postal code",
+    "enterCountry": "Enter country"
+  },
+  "payment": {
+    "title": "Payment Method",
+    "selectMethod": "Select Method",
+    "continue": "Continue"
+  },
+  "placeOrder": {
+    "shipping": "Shipping",
+    "paymentMethod": "Payment Method",
+    "method": "Method:",
+    "placeOrder": "Place Order"
+  },
+  "orderSummary": {
+    "title": "Order Summary",
+    "items": "Items:",
+    "shipping": "Shipping:",
+    "tax": "Tax:",
+    "total": "Total:"
+  },
+  "orderItems": {
+    "title": "Order Items",
+    "empty": "Your cart is empty"
+  },
+  "order": {
+    "title": "Order",
+    "shipping": "Shipping",
+    "name": "Name:",
+    "email": "Email:",
+    "address": "Address:",
+    "delivered": "Delivered on",
+    "notDelivered": "Not Delivered",
+    "paymentMethod": "Payment Method",
+    "method": "Method:",
+    "paid": "Paid on",
+    "notPaid": "Not Paid",
+    "goBack": "Go Back",
+    "invalidId": "Invalid ORDER ID",
+    "notFound": "Order not found",
+    "paymentSuccess": "Payment successful!",
+    "paymentFailed": "Payment failed. Please try again.",
+    "paypalNotConfigured": "PayPal is not configured. Please contact support."
+  },
+  "myOrders": {
+    "title": "My Orders",
+    "noOrders": "You have no orders yet.",
+    "id": "ID",
+    "date": "Date",
+    "total": "Total",
+    "paid": "Paid",
+    "delivered": "Delivered",
+    "details": "Details",
+    "notPaid": "Not Paid",
+    "notDelivered": "Not Delivered",
+    "errorLoading": "Failed to load orders"
+  },
+  "profile": {
+    "title": "My Profile",
+    "admin": "Administrator account",
+    "name": "Name",
+    "email": "Email",
+    "changePassword": "Change Password (optional)",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Leave blank to keep current",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm new password",
+    "saveChanges": "Save Changes",
+    "errorLoading": "Failed to load profile",
+    "updateSuccess": "Profile updated successfully",
+    "passwordShort": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "confirmPassword": "Confirm Password",
+    "enterEmail": "Enter email",
+    "enterPassword": "Enter password",
+    "enterName": "Enter name",
+    "enterConfirmPassword": "Confirm password",
+    "newCustomer": "New Customer?",
+    "returningCustomer": "Returning Customer?",
+    "loginLink": "Login",
+    "registerLink": "Register",
+    "invalidCredentials": "Invalid email or password",
+    "registrationFailed": "Registration failed",
+    "passwordShort": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match",
+    "welcomeBack": "Welcome back, {{name}}!",
+    "welcomeNew": "Welcome, {{name}}! Your account has been created.",
+    "googleFailed": "Google sign-in failed",
+    "logoutFailed": "Logout failed"
+  },
+  "search": {
+    "resultsFor": "Results for",
+    "productsFound_one": "{{count}} product found",
+    "productsFound_other": "{{count}} products found",
+    "noResults": "No products found for \"{{query}}\". Try a different search term.",
+    "errorLoading": "Failed to load products"
+  },
+  "common": {
+    "loading": "Loading...",
+    "errorOccurred": "An error occurred while fetching products"
+  }
+}
