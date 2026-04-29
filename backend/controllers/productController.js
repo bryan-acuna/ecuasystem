@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import asyncHandler from '../middleware/asyncHandler.js';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database.js';
 
 // @desc    Fetch all products
 // @route   GET /api/products

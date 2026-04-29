@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import asyncHandler from '../middleware/asyncHandler.js';
 import prisma from '../config/database.js';
 
@@ -70,6 +69,10 @@ const getOrderById = asyncHandler(async (req, res) => {
   });
 
   if (order) {
+    if (order.userId !== req.user.id && !req.user.isAdmin) {
+      res.status(403);
+      throw new Error('Not authorized');
+    }
     res.json(order);
   } else {
     res.status(404);
@@ -81,13 +84,15 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @route   PUT /api/orders/:id/pay
 // @access  Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  console.log('req', req.body);
-  console.log('res', res.body);
   const order = await prisma.order.findUnique({
     where: { id: req.params.id },
   });
 
   if (order) {
+    if (order.userId !== req.user.id && !req.user.isAdmin) {
+      res.status(403);
+      throw new Error('Not authorized');
+    }
     const updatedOrder = await prisma.order.update({
       where: { id: req.params.id },
       data: {

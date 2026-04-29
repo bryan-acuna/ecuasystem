@@ -1,13 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import { matchPassword } from '../utils/userHelper.js';
+import { matchPassword, hashPassword, sanitizeUser } from '../utils/userHelper.js';
 import asyncHandler from '../middleware/asyncHandler.js';
-import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.js';
 import { OAuth2Client } from 'google-auth-library';
+import prisma from '../config/database.js';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-const prisma = new PrismaClient();
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -51,11 +48,11 @@ const registerUser = asyncHandler(async (req, res) => {
       data: {
         name,
         email,
-        password: bcrypt.hashSync(password, 10),
+        password: await hashPassword(password),
       },
     });
     if (newUser) {
-      generateToken(res, newUser);
+      generateToken(res, newUser.id);
       res.status(201).json({
         id: newUser.id,
         name: newUser.name,
@@ -117,7 +114,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         name: req.body.name || user.name,
         email: req.body.email || user.email,
         ...(req.body.password && {
-          password: bcrypt.hashSync(req.body.password, 10),
+          password: await hashPassword(req.body.password),
         }),
       },
     });
@@ -139,7 +136,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();
-  res.json(users);
+  res.json(users.map(sanitizeUser));
 });
 
 // @desc    Delete user
@@ -174,7 +171,7 @@ const getUserById = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.json(user);
+    res.json(sanitizeUser(user));
   } else {
     res.status(404);
     throw new Error('User not found');

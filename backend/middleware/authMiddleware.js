@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from './asyncHandler.js';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import prisma from '../config/database.js';
 
 export const protect = asyncHandler(async (req, res, next) => {
   let token;
@@ -21,7 +20,6 @@ export const protect = asyncHandler(async (req, res, next) => {
           isAdmin: true,
         },
       });
-      console.log(user);
       if (!user) {
         res.status(401);
         throw new Error('Not authorized, user not found');

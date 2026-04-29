@@ -24,6 +24,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Security middleware
+const isDev = process.env.NODE_ENV !== 'production';
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -35,7 +36,9 @@ app.use(
           'https://images.unsplash.com',
           'https://*.unsplash.com',
         ],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        scriptSrc: isDev
+          ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
+          : ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         connectSrc: ["'self'", 'https://api.unsplash.com'],
