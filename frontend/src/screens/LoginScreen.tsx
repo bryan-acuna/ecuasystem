@@ -9,6 +9,8 @@ import Loader from '../components/Loader';
 import GoogleAuthButton from '../components/GoogleAuthButton';
 import FormContainer from '../components/FormContainer';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../utils/getErrorMessage';
+import { sanitizeRedirect } from '../utils/sanitizeRedirect';
 
 const LoginScreen = () => {
   const { t } = useTranslation();
@@ -17,7 +19,7 @@ const LoginScreen = () => {
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useAppSelector(state => state.auth);
   const { search } = useLocation();
-  const redirect = new URLSearchParams(search).get('redirect') || '/';
+  const redirect = sanitizeRedirect(new URLSearchParams(search).get('redirect'));
 
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -33,8 +35,8 @@ const LoginScreen = () => {
       dispatch(setCredentials(res));
       toast.success(t('auth.welcomeBack', { name: res.name }));
       navigate(redirect);
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('auth.invalidCredentials'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('auth.invalidCredentials')));
     }
   };
 

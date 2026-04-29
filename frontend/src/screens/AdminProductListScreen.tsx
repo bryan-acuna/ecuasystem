@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import { useGetProductsQuery, useDeleteProductMutation } from '../services/product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { getErrorMessage } from '../utils/getErrorMessage';
+import { formatPrice } from '../utils/formatPrice';
 
 const AdminProductListScreen = () => {
   const navigate = useNavigate();
@@ -16,8 +18,8 @@ const AdminProductListScreen = () => {
     try {
       await deleteProduct(id).unwrap();
       toast.success('Product deleted');
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to delete product');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to delete product'));
     }
   };
 
@@ -57,7 +59,7 @@ const AdminProductListScreen = () => {
                   />
                 </Table.Cell>
                 <Table.Cell><strong>{product.name}</strong></Table.Cell>
-                <Table.Cell>${product.price.toFixed(2)}</Table.Cell>
+                <Table.Cell>{formatPrice(product.price)}</Table.Cell>
                 <Table.Cell>{product.category}</Table.Cell>
                 <Table.Cell>{product.brand}</Table.Cell>
                 <Table.Cell>

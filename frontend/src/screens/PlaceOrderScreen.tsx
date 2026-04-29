@@ -3,7 +3,7 @@ import { useAppSelector } from '../store/hook/hooks';
 import {
   selectCartItems, selectItemsPrice, selectPaymentMethod,
   selectShippingAddress, selectShippingPrice, selectTaxPrice, selectTotalPrice,
-} from '../slices/cartSlices';
+} from '../slices/cartSlice';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useCreateOrderMutation } from '../services/orders';
@@ -81,9 +81,6 @@ const PlaceOrderScreen = () => {
           </Button>
         </OrderSummaryCard>
       </div>
-      <style>{`
-        @media (max-width: 768px) { .placeorder-grid { grid-template-columns: 1fr !important; } }
-      `}</style>
     </>
   );
 };

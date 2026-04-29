@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import type { CartItem } from '../types';
 import Message from './Message';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/formatPrice';
 
 interface OrderItemListProps {
   cartItems: CartItem[];
@@ -36,7 +37,7 @@ const OrderItemList = ({ cartItems }: OrderItemListProps) => {
                 </Link>
               </div>
               <Text size="2" style={{ flexShrink: 0 }}>
-                {item.qty} × ${item.price} = <strong>${(item.qty * item.price).toFixed(2)}</strong>
+                {item.qty} × {formatPrice(item.price)} = <strong>{formatPrice(item.qty * item.price)}</strong>
               </Text>
             </div>
           ))}

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useGetProductByIdQuery, useUpdateProductMutation } from '../services/product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 const CATEGORIES = ['Electronics', 'Phones', 'Tablets', 'Computers', 'Accessories', 'Other'];
 
@@ -52,8 +53,8 @@ const AdminProductEditScreen = () => {
       }).unwrap();
       toast.success('Product updated successfully');
       navigate('/admin/products');
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update product');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to update product'));
     }
   };
 

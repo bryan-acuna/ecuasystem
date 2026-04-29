@@ -2,6 +2,7 @@ import { Card, Text } from '@radix-ui/themes';
 import { Link } from 'react-router-dom';
 import type { Product as ProductType } from '../types/Product';
 import Rating from './Rating';
+import { formatPrice } from '../utils/formatPrice';
 
 const ProductCard = ({ id, name, image, price, rating, numReviews }: ProductType) => (
   <Card className="product-card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -24,7 +25,7 @@ const ProductCard = ({ id, name, image, price, rating, numReviews }: ProductType
       </Link>
       <Rating rating={rating} numReviews={`${numReviews} reviews`} />
       <Text size="4" weight="bold" style={{ color: 'var(--accent-11)', display: 'block', marginTop: 8 }}>
-        ${price}
+        {formatPrice(price)}
       </Text>
     </div>
   </Card>

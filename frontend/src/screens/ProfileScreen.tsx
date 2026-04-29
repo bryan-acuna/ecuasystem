@@ -7,6 +7,7 @@ import { useGetProfileQuery, useUpdateProfileMutation } from '../services/user';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -42,8 +43,8 @@ const ProfileScreen = () => {
       setPassword('');
       setConfirmPassword('');
       toast.success(t('profile.updateSuccess'));
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('profile.errorLoading'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('profile.errorLoading')));
     }
   };
 

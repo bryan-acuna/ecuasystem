@@ -3,7 +3,7 @@ import { Button, Card, Heading, RadioGroup, Text } from '@radix-ui/themes';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { savePaymentMethod } from '../slices/cartSlices';
+import { savePaymentMethod } from '../slices/cartSlice';
 import type { PaymentMethod } from '../types';
 import FormContainer from '../components/FormContainer';
 import { useTranslation } from 'react-i18next';

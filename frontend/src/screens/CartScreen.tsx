@@ -2,10 +2,11 @@ import { Button, Card, Heading, Select, Text } from '@radix-ui/themes';
 import { Trash2, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
-import { removeFromCart, updateItemQuantity } from '../slices/cartSlices';
-import { useCallback, useMemo } from 'react';
+import { removeFromCart, updateItemQuantity } from '../slices/cartSlice';
+import { useCallback } from 'react';
 import Message from '../components/Message';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/formatPrice';
 
 const CartScreen = () => {
   const { t } = useTranslation();
@@ -21,8 +22,6 @@ const CartScreen = () => {
     if (!window.confirm(t('cart.confirmRemove'))) return;
     dispatch(removeFromCart({ id }));
   }, [dispatch, t]);
-
-  const formattedPrice = useMemo(() => itemsPrice.toFixed(2), [itemsPrice]);
 
   if (cartItems.length === 0) {
     return (
@@ -56,7 +55,7 @@ const CartScreen = () => {
                     >
                       {item.name}
                     </Link>
-                    <Text size="3" weight="bold" style={{ color: 'var(--accent-11)' }}>${item.price}</Text>
+                    <Text size="3" weight="bold" style={{ color: 'var(--accent-11)' }}>{formatPrice(item.price)}</Text>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                     <Select.Root
@@ -93,7 +92,7 @@ const CartScreen = () => {
           <Heading size="4" mb="2">
             {t('cart.subtotal')} ({totalNumberItems} {totalNumberItems === 1 ? t('cart.item') : t('cart.items')})
           </Heading>
-          <Text size="6" weight="bold">${formattedPrice}</Text>
+          <Text size="6" weight="bold">{formatPrice(itemsPrice)}</Text>
           <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <Button
               size="3"
@@ -110,11 +109,6 @@ const CartScreen = () => {
         </Card>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .cart-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 };

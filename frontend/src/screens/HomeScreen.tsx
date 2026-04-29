@@ -177,17 +177,6 @@ const HomeScreen = () => {
         </div>
       </div>
 
-      <style>{`
-        .mobile-filter-bar  { display: none; }
-        .desktop-layout     { display: flex; }
-        .desktop-sidebar    { display: block; }
-
-        @media (max-width: 640px) {
-          .mobile-filter-bar { display: block; margin-bottom: 16px; }
-          .desktop-layout    { display: block; }
-          .desktop-sidebar   { display: none; }
-        }
-      `}</style>
     </>
   );
 };

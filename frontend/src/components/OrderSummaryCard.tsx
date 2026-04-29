@@ -1,6 +1,7 @@
 import { Card, Heading, Text, Separator, Flex } from '@radix-ui/themes';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/formatPrice';
 
 interface OrderSummaryCardProps {
   itemsPrice: number;
@@ -22,11 +23,11 @@ const OrderSummaryCard = ({ itemsPrice, shippingPrice, taxPrice, totalPrice, chi
   return (
     <Card>
       <Heading size="4" mb="3">{t('orderSummary.title')}</Heading>
-      <SummaryRow label={t('orderSummary.items')}    value={`$${itemsPrice}`} />
-      <SummaryRow label={t('orderSummary.shipping')} value={`$${shippingPrice}`} />
-      <SummaryRow label={t('orderSummary.tax')}      value={`$${taxPrice}`} />
+      <SummaryRow label={t('orderSummary.items')}    value={formatPrice(itemsPrice)} />
+      <SummaryRow label={t('orderSummary.shipping')} value={formatPrice(shippingPrice)} />
+      <SummaryRow label={t('orderSummary.tax')}      value={formatPrice(taxPrice)} />
       <Separator size="4" my="2" />
-      <SummaryRow label={t('orderSummary.total')}    value={`$${totalPrice}`} />
+      <SummaryRow label={t('orderSummary.total')}    value={formatPrice(totalPrice)} />
       {children && <div style={{ marginTop: 16 }}>{children}</div>}
     </Card>
   );

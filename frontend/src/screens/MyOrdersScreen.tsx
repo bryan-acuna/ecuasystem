@@ -4,6 +4,7 @@ import { useGetMyOrdersQuery } from '../services/orders';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/formatPrice';
 
 const MyOrdersScreen = () => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ const MyOrdersScreen = () => {
                   {order.id}
                 </Table.Cell>
                 <Table.Cell>{new Date(order.createdAt).toLocaleDateString()}</Table.Cell>
-                <Table.Cell>${order.totalPrice.toFixed(2)}</Table.Cell>
+                <Table.Cell>{formatPrice(order.totalPrice)}</Table.Cell>
                 <Table.Cell>
                   {order.isPaid
                     ? <Badge color="green">{new Date(order.paidAt!).toLocaleDateString()}</Badge>

@@ -4,6 +4,7 @@ import { setCredentials } from '../slices/authSlice';
 import { useGoogleAuthMutation } from '../services/user';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 interface Props {
   redirect?: string;
@@ -21,8 +22,8 @@ const GoogleAuthButton = ({ redirect = '/' }: Props) => {
       dispatch(setCredentials(user));
       toast.success(`Welcome, ${user.name}!`);
       navigate(redirect);
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Google sign-in failed');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Google sign-in failed'));
     }
   };
 

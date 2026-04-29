@@ -5,17 +5,17 @@ export const productApi = api.injectEndpoints({
   endpoints: builder => ({
     getProducts: builder.query<Product[], void>({
       query: () => '/products',
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
       providesTags: ['Product'],
     }),
     getProductById: builder.query<Product, string>({
       query: id => `/products/${id}`,
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
       providesTags: (_result, _error, id) => [{ type: 'Product', id }],
     }),
     getProductsByCategory: builder.query<Product[], string>({
       query: category => `/products?category=${encodeURIComponent(category)}`,
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 60,
       providesTags: ['Product'],
     }),
     createProduct: builder.mutation<Product, Omit<Product, 'id' | 'rating' | 'numReviews'>>({

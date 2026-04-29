@@ -9,6 +9,8 @@ import Loader from '../components/Loader';
 import GoogleAuthButton from '../components/GoogleAuthButton';
 import FormContainer from '../components/FormContainer';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../utils/getErrorMessage';
+import { sanitizeRedirect } from '../utils/sanitizeRedirect';
 
 const RegisterScreen = () => {
   const { t } = useTranslation();
@@ -17,7 +19,7 @@ const RegisterScreen = () => {
   const [register, { isLoading }] = useRegisterMutation();
   const { userInfo } = useAppSelector(state => state.auth);
   const { search } = useLocation();
-  const redirect = new URLSearchParams(search).get('redirect') || '/';
+  const redirect = sanitizeRedirect(new URLSearchParams(search).get('redirect'));
 
   const [name, setName]                       = useState('');
   const [email, setEmail]                     = useState('');
@@ -36,8 +38,8 @@ const RegisterScreen = () => {
       const user = await register({ name, email, password }).unwrap();
       dispatch(setCredentials(user));
       toast.success(t('auth.welcomeNew', { name: user.name }));
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('auth.registrationFailed'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('auth.registrationFailed')));
     }
   };
 

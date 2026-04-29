@@ -39,7 +39,9 @@
     "reviews": "reviews",
     "invalidId": "Invalid product ID",
     "errorFetching": "Error fetching product",
-    "notFound": "Product not found"
+    "notFound": "Product not found",
+    "previousImage": "Previous image",
+    "nextImage": "Next image"
   },
   "cart": {
     "title": "Shopping Cart",

@@ -4,6 +4,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCreateProductMutation } from '../services/product';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 const CATEGORIES = ['Electronics', 'Phones', 'Tablets', 'Computers', 'Accessories', 'Other'];
 
@@ -33,8 +34,8 @@ const AdminProductScreen = () => {
       }).unwrap();
       toast.success('Product created successfully');
       navigate('/');
-    } catch (err: any) {
-      toast.error(err?.data?.message || err?.error || 'Failed to create product');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to create product'));
     }
   };
 

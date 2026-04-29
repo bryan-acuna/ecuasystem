@@ -7,8 +7,9 @@ import { useGetProductByIdQuery } from '../services/product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useAppDispatch } from '../store/hook/hooks';
-import { addToCart } from '../slices/cartSlices';
+import { addToCart } from '../slices/cartSlice';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/formatPrice';
 
 const ProductScreen = () => {
   const { t } = useTranslation();
@@ -52,7 +53,9 @@ const ProductScreen = () => {
             {allImages.length > 1 && (
               <>
                 <button
+                  type="button"
                   onClick={prev}
+                  aria-label={t('product.previousImage')}
                   style={{
                     position: 'absolute', top: '50%', left: 8, transform: 'translateY(-50%)',
                     background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%',
@@ -60,10 +63,12 @@ const ProductScreen = () => {
                     cursor: 'pointer', zIndex: 1,
                   }}
                 >
-                  <ChevronLeft size={18} />
+                  <ChevronLeft size={18} aria-hidden="true" />
                 </button>
                 <button
+                  type="button"
                   onClick={next}
+                  aria-label={t('product.nextImage')}
                   style={{
                     position: 'absolute', top: '50%', right: 8, transform: 'translateY(-50%)',
                     background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%',
@@ -71,7 +76,7 @@ const ProductScreen = () => {
                     cursor: 'pointer', zIndex: 1,
                   }}
                 >
-                  <ChevronRight size={18} />
+                  <ChevronRight size={18} aria-hidden="true" />
                 </button>
               </>
             )}
@@ -83,7 +88,16 @@ const ProductScreen = () => {
                   key={idx}
                   src={src}
                   alt={`thumb-${idx}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={idx === currentImg}
                   onClick={() => setCurrentImg(idx)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setCurrentImg(idx);
+                    }
+                  }}
                   style={{
                     width: 64, height: 64, objectFit: 'contain', borderRadius: 8,
                     background: 'var(--gray-2)', padding: 4, cursor: 'pointer',
@@ -100,7 +114,7 @@ const ProductScreen = () => {
           <Heading size="5" mb="2">{product.name}</Heading>
           <Rating rating={product.rating} numReviews={`${product.numReviews} ${t('product.reviews')}`} />
           <Text size="6" weight="bold" style={{ color: 'var(--accent-11)', display: 'block', margin: '12px 0' }}>
-            ${product.price}
+            {formatPrice(product.price)}
           </Text>
           <Text size="3" color="gray">{product.description}</Text>
         </div>
@@ -110,7 +124,7 @@ const ProductScreen = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Text weight="medium">{t('product.price')}</Text>
-              <Text weight="bold">${product.price}</Text>
+              <Text weight="bold">{formatPrice(product.price)}</Text>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Text weight="medium">{t('product.status')}</Text>
@@ -130,11 +144,6 @@ const ProductScreen = () => {
         </Card>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .product-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </>
   );
 };

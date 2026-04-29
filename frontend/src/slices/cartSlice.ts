@@ -10,6 +10,11 @@ import type {
 import { calculateCartTotals } from '../utils/cartUtils';
 import type { RootState } from '../store/store';
 
+interface RehydrateAction {
+  type: typeof REHYDRATE;
+  payload?: { cart?: Partial<CartState> };
+}
+
 const initialState: CartState = {
   cartItems: [],
   shippingAddress: null,
@@ -92,8 +97,8 @@ const cartSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(REHYDRATE, (state, action: any) => {
-      const persisted = action?.payload?.cart as Partial<CartState> | undefined;
+    builder.addCase(REHYDRATE, (state, action: RehydrateAction) => {
+      const persisted = action.payload?.cart;
       if (!persisted) {
         return state;
       }

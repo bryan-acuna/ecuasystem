@@ -6,6 +6,7 @@ import {
   useGetOrderDetailsQuery,
   useGetPayPalClientIdQuery,
   usePayOrderMutation,
+  type PayPalCaptureDetails,
 } from '../services/orders';
 import Loader from '../components/Loader';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
@@ -36,7 +37,7 @@ const OrderScreen = () => {
   if (error) return <>{GoBack}<Message variant="danger">{'status' in error ? `Error: ${error.status}` : 'An error occurred'}</Message></>;
   if (!order) return <>{GoBack}<Message variant="info">{t('order.notFound')}</Message></>;
 
-  const handlePaymentSuccess = async (details: any) => {
+  const handlePaymentSuccess = async (details: PayPalCaptureDetails) => {
     try {
       await payOrder({ orderId: order.id, details: { id: details.id, status: details.status, update_time: details.update_time, payer: details.payer } }).unwrap();
       refetch();
@@ -104,7 +105,6 @@ const OrderScreen = () => {
           )}
         </div>
       </div>
-      <style>{`@media (max-width: 768px) { .order-grid { grid-template-columns: 1fr !important; } }`}</style>
     </>
   );
 };

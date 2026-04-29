@@ -39,7 +39,9 @@
     "reviews": "reseñas",
     "invalidId": "ID de producto no válido",
     "errorFetching": "Error al obtener el producto",
-    "notFound": "Producto no encontrado"
+    "notFound": "Producto no encontrado",
+    "previousImage": "Imagen anterior",
+    "nextImage": "Imagen siguiente"
   },
   "cart": {
     "title": "Carrito de compras",

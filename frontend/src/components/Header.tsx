@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
 import { removeCredentials } from '../slices/authSlice';
 import { useLogoutMutation } from '../services/user';
 import { useTranslation } from 'react-i18next';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 const NAV_BG     = 'var(--color-panel-solid)';
 const SUBNAV_BG  = 'var(--gray-2)';
@@ -50,8 +51,8 @@ const Header = () => {
       dispatch(removeCredentials());
       navigate('/login');
       toast.success(message);
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('auth.logoutFailed'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('auth.logoutFailed')));
     }
   };
 
@@ -111,7 +112,7 @@ const Header = () => {
           </div>
 
           {/* Right actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0, marginLeft: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, marginLeft: 16 }}>
 
             {/* Language toggle */}
             <IconButton
@@ -307,12 +308,16 @@ const Header = () => {
             <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--gray-a6)' }}>
               <TextField.Root
                 placeholder={t('nav.searchPlaceholder')}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
                 onKeyDown={e => {
-                  if (e.key === 'Enter') handleSearch((e.target as HTMLInputElement).value);
+                  if (e.key === 'Enter') handleSearch();
                 }}
               >
                 <TextField.Slot side="right">
-                  <Search size={14} style={{ color: 'var(--gray-10)' }} />
+                  <IconButton size="1" variant="ghost" onClick={() => handleSearch()} aria-label="Search">
+                    <Search size={14} />
+                  </IconButton>
                 </TextField.Slot>
               </TextField.Root>
             </div>

@@ -12,7 +12,7 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import cartSliceReducer from '../slices/cartSlices';
+import cartSliceReducer from '../slices/cartSlice';
 import authSliceReducer from '../slices/authSlice';
 
 const rootReducers = combineReducers({

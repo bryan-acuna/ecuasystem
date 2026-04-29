@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Card, Heading, Text, TextField } from '@radix-ui/themes';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hook/hooks';
-import { saveShippingAddress, selectShippingAddress } from '../slices/cartSlices';
+import { saveShippingAddress, selectShippingAddress } from '../slices/cartSlice';
 import CheckoutSteps from '../components/CheckoutSteps';
 import FormContainer from '../components/FormContainer';
 import { useTranslation } from 'react-i18next';

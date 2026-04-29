@@ -80,10 +80,25 @@ a {
 /* ══════════════════════════════════════════════════
    MEDIA QUERIES
 ══════════════════════════════════════════════════ */
+/* Layout defaults */
+.mobile-filter-bar  { display: none; }
+.desktop-layout     { display: flex; }
+.desktop-sidebar    { display: block; }
+
 @media (max-width: 768px) {
   .desktop-only  { display: none !important; }
   .mobile-only   { display: flex !important; }
   .desktop-search { display: none !important; }
+  .cart-grid       { grid-template-columns: 1fr !important; }
+  .product-grid    { grid-template-columns: 1fr !important; }
+  .order-grid      { grid-template-columns: 1fr !important; }
+  .placeorder-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 640px) {
+  .mobile-filter-bar { display: block; margin-bottom: 16px; }
+  .desktop-layout    { display: block; }
+  .desktop-sidebar   { display: none; }
 }
 
 @media (max-width: 576px) {
