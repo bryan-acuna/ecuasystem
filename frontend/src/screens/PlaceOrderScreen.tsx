@@ -5,7 +5,7 @@ import {
   selectShippingAddress, selectShippingPrice, selectTaxPrice, selectTotalPrice,
 } from '../slices/cartSlices';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useCreateOrderMutation } from '../services/orders';
 import { toast } from 'react-toastify';
 import OrderSummaryCard from '../components/OrderSummaryCard';
@@ -24,8 +24,8 @@ const PlaceOrderScreen = () => {
   const taxPrice        = useAppSelector(selectTaxPrice);
   const totalPrice      = useAppSelector(selectTotalPrice);
 
-  if (!shippingAddress) navigate('/shipping');
-  if (!paymentMethod)   navigate('/payment');
+  if (!shippingAddress) return <Navigate to="/shipping" replace />;
+  if (!paymentMethod)   return <Navigate to="/payment" replace />;
 
   const placeOrderHandler = async () => {
     try {

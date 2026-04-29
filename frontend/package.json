@@ -1,7 +1,6 @@
 {
   "name": "ecuasystems",
   "private": true,
-  "proxy": "http://localhost:8000",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -20,11 +19,9 @@
     "@react-oauth/google": "^0.13.5",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
-    "build": "^0.1.4",
     "clsx": "^2.1.1",
     "i18next": "^26.0.6",
     "lucide-react": "^1.8.0",
-    "npm": "^11.7.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-i18next": "^17.0.4",
@@ -32,8 +29,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
     "react-toastify": "^11.0.5",
-    "redux-persist": "^6.0.0",
-    "run": "^1.5.0"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

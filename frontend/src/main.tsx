@@ -35,6 +35,7 @@ import SearchScreen from './screens/SearchScreen.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from './context/ThemeContext.tsx';
 import './i18n';
+import AuthBootstrap from './components/AuthBootstrap.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -59,7 +60,10 @@ const router = createBrowserRouter(
       <Route path="" element={<AdminRoute />}>
         <Route path="/admin/product/new" element={<AdminProductScreen />} />
         <Route path="/admin/products" element={<AdminProductListScreen />} />
-        <Route path="/admin/product/:id/edit" element={<AdminProductEditScreen />} />
+        <Route
+          path="/admin/product/:id/edit"
+          element={<AdminProductEditScreen />}
+        />
       </Route>
     </Route>
   )
@@ -69,12 +73,16 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
+        <GoogleOAuthProvider
+          clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}
+        >
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-              <PayPalScriptProvider options={{ clientId: 'sb' }} deferLoading>
-                <RouterProvider router={router} />
-              </PayPalScriptProvider>
+              <AuthBootstrap>
+                <PayPalScriptProvider options={{ clientId: 'sb' }} deferLoading>
+                  <RouterProvider router={router} />
+                </PayPalScriptProvider>
+              </AuthBootstrap>
             </PersistGate>
           </Provider>
         </GoogleOAuthProvider>

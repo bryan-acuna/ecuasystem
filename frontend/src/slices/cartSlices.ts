@@ -94,7 +94,6 @@ const cartSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(REHYDRATE, (state, action: any) => {
       const persisted = action?.payload?.cart as Partial<CartState> | undefined;
-      console.log(action.payload);
       if (!persisted) {
         return state;
       }
