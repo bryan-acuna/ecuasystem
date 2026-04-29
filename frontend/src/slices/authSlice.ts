@@ -6,18 +6,8 @@ interface AuthState {
   userInfo: User | null;
 }
 
-const getUserFromStorage = (): User | null => {
-  try {
-    const userInfo = localStorage.getItem('userInfo');
-    return userInfo ? JSON.parse(userInfo) : null;
-  } catch (error) {
-    console.error('Failed to parse userInfo from localStorage:', error);
-    return null;
-  }
-};
-
 const initialState: AuthState = {
-  userInfo: getUserFromStorage(),
+  userInfo: null,
 };
 
 const authSlice = createSlice({
@@ -26,11 +16,9 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<User>) => {
       state.userInfo = action.payload;
-      localStorage.setItem('userInfo', JSON.stringify(action.payload));
     },
     removeCredentials: state => {
       state.userInfo = null;
-      localStorage.removeItem('userInfo');
     },
   },
 });

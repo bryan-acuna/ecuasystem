@@ -19,9 +19,10 @@ const CATEGORIES = [
   { label: 'Computers',   path: '/category/computers',   Icon: Monitor },
 ];
 
-const NAV_BG     = '#0f172a';
-const SUBNAV_BG  = '#1a2235';
-const LINK_COLOR = '#94a3b8';
+const NAV_BG     = 'var(--color-panel-solid)';
+const SUBNAV_BG  = 'var(--gray-2)';
+const LINK_COLOR = 'var(--gray-11)';
+const BORDER     = '1px solid var(--gray-a5)';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -67,12 +68,12 @@ const Header = () => {
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: BORDER,
         }}>
 
           {/* Brand + theme toggle */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-            <Link to="/" style={{ color: '#fff', fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px' }}>
+            <Link to="/" style={{ color: 'var(--gray-12)', fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px' }}>
               Ecuasystems
             </Link>
             <IconButton
@@ -121,8 +122,8 @@ const Header = () => {
                 <span style={{
                   position: 'absolute',
                   top: 2, right: 2,
-                  background: '#10b981',
-                  color: '#fff',
+                  background: 'var(--accent-9)',
+                  color: 'var(--accent-contrast)',
                   borderRadius: '9999px',
                   minWidth: 16,
                   height: 16,
@@ -194,7 +195,7 @@ const Header = () => {
           className="desktop-only"
           style={{
             background: SUBNAV_BG,
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: BORDER,
             padding: '0 16px',
             overflow: 'hidden',
             alignItems: 'center',
@@ -206,7 +207,7 @@ const Header = () => {
             <DropdownMenu.Trigger>
               <Button
                 variant="ghost" size="2"
-                style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 13, height: 40, borderRadius: 0 }}
+                style={{ color: 'var(--gray-12)', fontWeight: 600, fontSize: 13, height: 40, borderRadius: 0 }}
               >
                 <Menu size={14} /> Menu <ChevronDown size={10} />
               </Button>
@@ -243,7 +244,7 @@ const Header = () => {
                   whiteSpace: 'nowrap',
                   transition: 'color 0.2s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--gray-12)')}
                 onMouseLeave={e => (e.currentTarget.style.color = LINK_COLOR)}
               >
                 {label}
@@ -261,7 +262,7 @@ const Header = () => {
           {/* Overlay */}
           <div
             onClick={() => setDrawerOpen(false)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 200 }}
+            style={{ position: 'fixed', inset: 0, background: 'var(--black-a9)', zIndex: 200 }}
           />
 
           {/* Drawer panel */}

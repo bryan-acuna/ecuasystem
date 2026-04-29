@@ -26,12 +26,14 @@ export const userApi = api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['User'],
     }),
     logout: builder.mutation<LogoutResponse, void>({
       query: () => ({
         url: '/users/logout',
         method: 'POST',
       }),
+      invalidatesTags: ['User'],
     }),
     register: builder.mutation<User, RegisterRequest>({
       query: credentials => ({
@@ -39,6 +41,7 @@ export const userApi = api.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['User'],
     }),
     googleAuth: builder.mutation<User, { credential: string }>({
       query: body => ({
@@ -46,9 +49,11 @@ export const userApi = api.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: ['User'],
     }),
     getProfile: builder.query<User, void>({
       query: () => '/users/profile',
+      providesTags: ['User'],
     }),
     updateProfile: builder.mutation<User, UpdateProfileRequest>({
       query: data => ({
@@ -56,6 +61,7 @@ export const userApi = api.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
+      invalidatesTags: ['User'],
     }),
   }),
 });
