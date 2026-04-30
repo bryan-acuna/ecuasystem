@@ -2,13 +2,16 @@
   "name": "ecuasystems",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "backend/index.ts",
   "scripts": {
-    "start": "node backend/index.js",
-    "server": "nodemon backend/index.js",
+    "start": "tsx backend/index.ts",
+    "server": "tsx watch backend/index.ts",
     "client": "npm run dev --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm install && npx prisma generate && npm install --prefix frontend --include=dev && npm run build --prefix frontend"
+    "typecheck:backend": "tsc --noEmit -p backend/tsconfig.json",
+    "build": "npm install && npx prisma generate && npm install --prefix frontend --include=dev && npm run build --prefix frontend",
+    "seed": "tsx backend/seed.ts",
+    "test:db": "tsx backend/testConnection.ts"
   },
   "repository": {
     "type": "git",
@@ -39,7 +42,16 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.6.0",
     "concurrently": "^9.2.1",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   }
 }

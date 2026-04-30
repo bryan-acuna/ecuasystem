@@ -1,14 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 
-// Singleton pattern for Prisma Client
-let prisma;
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
+}
+
+let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient({
-    log: ['error'],
-  });
+  prisma = new PrismaClient({ log: ['error'] });
 } else {
-  // In development, use global to prevent hot reload from creating new instances
   if (!global.prisma) {
     global.prisma = new PrismaClient({
       log: ['query', 'error', 'warn'],
@@ -17,7 +18,6 @@ if (process.env.NODE_ENV === 'production') {
   prisma = global.prisma;
 }
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
   await prisma.$disconnect();
   process.exit(0);

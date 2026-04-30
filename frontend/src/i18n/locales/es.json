@@ -27,6 +27,7 @@
     "sortHighLow": "Mayor a menor",
     "minPrice": "Precio mínimo ($)",
     "maxPrice": "Precio máximo ($)",
+    "priceRange": "Rango de precios",
     "noProducts": "Ningún producto coincide con el rango de precios seleccionado."
   },
   "product": {

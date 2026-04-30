@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -21,9 +21,8 @@ dotenv.config();
 validateEnv();
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = Number(process.env.PORT) || 8000;
 
-// Security middleware
 const isDev = process.env.NODE_ENV !== 'production';
 app.use(
   helmet({
@@ -47,7 +46,6 @@ app.use(
   })
 );
 
-// CORS configuration
 const corsOptions = {
   origin:
     process.env.NODE_ENV === 'production'
@@ -57,31 +55,25 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use('/api', limiter);
 
-// Logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 } else {
   app.use(morgan('combined'));
 }
 
-// Compression
 app.use(compression());
-
-// Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -89,30 +81,24 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
-app.get('/api/config/paypal', (req, res) =>
-  res.send({
-    clientId: process.env.PAYPAL_CLIENT_ID,
-  })
-);
+app.get('/api/config/paypal', (_req: Request, res: Response) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
+});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-  app.get('{*path}', (req, res) =>
-    res.sendFile(
-      path.resolve(__dirname, '..', 'frontend', 'dist', 'index.html')
-    )
+  app.get('{*path}', (_req: Request, res: Response) =>
+    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'dist', 'index.html'))
   );
 } else {
-  app.get('/', (req, res) => {
+  app.get('/', (_req: Request, res: Response) => {
     res.json({ message: 'API is working' });
   });
 }
-// Error handling
+
 app.use(notFound);
 app.use(errorHandler);
 

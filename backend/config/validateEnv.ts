@@ -1,14 +1,7 @@
-const validateEnv = () => {
-  const requiredEnvVars = [
-    'NODE_ENV',
-    'PORT',
-    'DATABASE_URL',
-    'JWT_SECRET',
-  ];
+const validateEnv = (): void => {
+  const requiredEnvVars = ['NODE_ENV', 'PORT', 'DATABASE_URL', 'JWT_SECRET'] as const;
 
-  const missingVars = requiredEnvVars.filter(
-    varName => !process.env[varName]
-  );
+  const missingVars = requiredEnvVars.filter(name => !process.env[name]);
 
   if (missingVars.length > 0) {
     throw new Error(
@@ -16,10 +9,9 @@ const validateEnv = () => {
     );
   }
 
-  // Validate JWT_SECRET strength in production
   if (
     process.env.NODE_ENV === 'production' &&
-    process.env.JWT_SECRET.length < 32
+    (process.env.JWT_SECRET ?? '').length < 32
   ) {
     throw new Error('JWT_SECRET must be at least 32 characters in production');
   }

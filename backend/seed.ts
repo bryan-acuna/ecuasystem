@@ -4,17 +4,19 @@ import users from './data/user.js';
 
 const prisma = new PrismaClient();
 
-const seedProducts = async () => {
+const seedProducts = async (): Promise<void> => {
   try {
     const adminUser = await prisma.user.findUnique({
       where: { email: 'admin@email.com' },
     });
+    if (!adminUser) throw new Error('Admin user not found — seed users first');
+
     console.error('Seed starting');
     await prisma.order.deleteMany();
     await prisma.product.deleteMany();
-    // await prisma.user.deleteMany();
     await prisma.review.deleteMany();
     console.error('Delete existing product');
+
     for (const product of products) {
       await prisma.product.create({
         data: {
@@ -34,9 +36,6 @@ const seedProducts = async () => {
     }
     const p = await prisma.product.findMany();
     console.log(p);
-    // for (let a of p) {
-    //   console.log(p.name);
-    // }
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   } finally {
@@ -45,7 +44,8 @@ const seedProducts = async () => {
   }
 };
 
-const seedUsers = async () => {
+// Kept for manual invocation; swap the call below to seedUsers() to run.
+const _seedUsers = async (): Promise<void> => {
   try {
     console.error('Seed starting');
     await prisma.order.deleteMany();
@@ -59,16 +59,11 @@ const seedUsers = async () => {
           name: user.name,
           email: user.email,
           password: user.password,
-          isAdmin: user.isAdmin,
+          isAdmin: user.isAdmin ?? false,
         },
       });
-      console.error('Prodcut created');
+      console.error('User created');
     }
-    // const p = await prisma.product.findMany();
-    console.log(p);
-    // for (let a of p) {
-    //   console.log(p.name);
-    // }
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   } finally {
@@ -77,5 +72,5 @@ const seedUsers = async () => {
   }
 };
 
-seedProducts();
-// seedUsers();
+void _seedUsers;
+void seedProducts();
